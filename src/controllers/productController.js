@@ -168,3 +168,127 @@ exports.allProduct = async (req, res) => {
         });
     }
 }
+
+exports.signleProduct = async (req, res) => {
+    try {
+        let id = new ObjectId(req.params.id);
+
+        let matchStage = {
+            $match: {
+                _id: id,
+            }
+        }
+        let joinMatchCategory = {
+            $lookup: {
+                from: "categories",
+                localField: "category_id",
+                foreignField: "_id",
+                as: "category"
+            }
+        }
+
+        let joinMatchBrand = {
+            $lookup: {
+                from: "brands",
+                localField: "brand_id",
+                foreignField: "_id",
+                as: "brand"
+            }
+        }
+
+        let data = await productModel.aggregate([matchStage, joinMatchCategory, joinMatchBrand]);
+
+        res.status(200).json({
+            success: true,
+            message: "Product retrieved successfully.",
+            data,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            error: error.toString(),
+            message: "Something went wrong.",
+        });
+    }
+}
+
+// Update product single
+exports.updateProduct = async (req, res) => {
+    try {
+        let id = req.params.id;
+        const {
+            title,
+            images,
+            short_description,
+            price,
+            is_discount,
+            discount_price,
+            remark,
+            stock,
+            color,
+            size,
+            description,
+            category_id,
+            brand_id
+        } = req.body;
+
+        if (discount_price > price) {
+            return res.status(400).json({
+                success: false,
+                message: "Discount price should be less than the original price.",
+            });
+        }
+
+        let data = await productModel.findByIdAndUpdate(id, {
+            title,
+            images,
+            short_description,
+            price,
+            is_discount,
+            discount_price,
+            remark,
+            stock,
+            color,
+            size,
+            description,
+            category_id,
+            brand_id
+        },
+            {
+                new: true
+            });
+        res.status(200).json({
+            success: true,
+            message: "Product updated successfully.",
+            data
+        })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            error: error.toString(),
+            message: "Something went wrong.",
+        });
+    }
+}
+
+// Product delete single
+exports.deleteProduct = async (req, res) => {
+    try {
+        let id = req.params.id;
+        let data = await productModel.findByIdAndDelete(id);
+        res.status(200).json({
+            success: true,
+            message: "Product deleted successfully.",
+            data
+        })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            error: error.toString(),
+            message: "Something went wrong.",
+        });
+    }
+}

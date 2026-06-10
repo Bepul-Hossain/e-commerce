@@ -27,8 +27,9 @@ router.put('/user-update', authVerificationUser, userController.update);
 
 // ===========For Product==========
 router.post('/create-product', authVerificationAdmin, productController.createProduct);
-router.get('/all-products/:category_id/:brand_id/:remark/:keyword/:per_page/:page_no', productController.allProduct);
-// router.put('/product-update/:id', authVerificationAdmin, productController.updateProduct);
-// router.delete('/product-delete/:id', authVerificationAdmin, productController.deleteProduct);
+router.get('/all-products/:category_id/:brand_id/:remark/:keyword/:per_page/:page_no', authVerificationAdmin, productController.allProduct);
+router.get('/single-product/:id', authVerificationAdmin, productController.signleProduct);
+router.put('/update-product/:id', authVerificationAdmin, productController.updateProduct);
+router.delete('/delete-product/:id', authVerificationAdmin, productController.deleteProduct);
 
 module.exports = router;
