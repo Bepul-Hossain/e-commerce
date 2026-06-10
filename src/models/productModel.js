@@ -8,7 +8,7 @@ const DataSchema = new mongoose.Schema(
         price: { type: Number },
         is_discount: { type: Boolean, default: false },
         discount_price: { type: Number },
-        remarks: { type: String },
+        remark: { type: String },
         stock: { type: Number },
         color: [String],
         size: [String],
