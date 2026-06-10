@@ -7,6 +7,7 @@ const userController = require('../controllers/userController.js');
 const productController = require('../controllers/productController.js');
 const categoryController = require('../controllers/categoryController.js');
 const brandController = require('../controllers/brandController.js');
+const reviewController = require('../controllers/reviewController.js');
 
 const authVerificationAdmin = require('../middlewares/authVerificationAdmin.js');
 const authVerificationUser = require('../middlewares/authVerificationUser.js');
@@ -30,23 +31,28 @@ router.put('/user-update', authVerificationUser, userController.update);
 
 // ===========For Product==========
 router.post('/create-product', authVerificationAdmin, productController.createProduct);
-router.get('/all-products/:category_id/:brand_id/:remark/:keyword/:per_page/:page_no', authVerificationAdmin, productController.allProduct);
-router.get('/single-product/:id', authVerificationAdmin, productController.signleProduct);
+router.get('/all-products/:category_id/:brand_id/:remark/:keyword/:per_page/:page_no', productController.allProduct);
+router.get('/single-product/:id',  productController.signleProduct);
 router.put('/update-product/:id', authVerificationAdmin, productController.updateProduct);
 router.delete('/delete-product/:id', authVerificationAdmin, productController.deleteProduct);
 
 // ===========For Category==========
 router.post('/create-category', authVerificationAdmin, categoryController.createCategory);
-router.get('/all-category/:per_page/:page_no', authVerificationAdmin, categoryController.allCategory);
-router.get('/single-category/:id', authVerificationAdmin, categoryController.singleCategory);
+router.get('/all-category/:per_page/:page_no', categoryController.allCategory);
+router.get('/single-category/:id', categoryController.singleCategory);
 router.put('/update-category/:id', authVerificationAdmin, categoryController.updateCategory);
 router.delete('/delete-category/:id', authVerificationAdmin, categoryController.deleteCategory);
 
 // ===========For Brand==========
 router.post('/create-brand', authVerificationAdmin, brandController.createBrand);
-router.get('/all-brand/:per_page/:page_no', authVerificationAdmin, brandController.allBrand);
-router.get('/single-brand/:id', authVerificationAdmin, brandController.singleBrand);
+router.get('/all-brand/:per_page/:page_no', brandController.allBrand);
+router.get('/single-brand/:id', brandController.singleBrand);
 router.put('/update-brand/:id', authVerificationAdmin, brandController.updateBrand);
 router.delete('/delete-brand/:id', authVerificationAdmin, brandController.deleteBrand);
+
+// ===========For Review==========
+router.post('/create-review', authVerificationUser, reviewController.createReview);
+router.get('/all-review/:per_page/:page_no', reviewController.allReview);
+router.get('/all-review-by-product/:product_id', reviewController.allReviewByProducts);
 
 module.exports = router;
