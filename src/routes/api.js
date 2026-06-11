@@ -8,6 +8,7 @@ const productController = require('../controllers/productController.js');
 const categoryController = require('../controllers/categoryController.js');
 const brandController = require('../controllers/brandController.js');
 const reviewController = require('../controllers/reviewController.js');
+const cartController = require('../controllers/cartController.js');
 
 const authVerificationAdmin = require('../middlewares/authVerificationAdmin.js');
 const authVerificationUser = require('../middlewares/authVerificationUser.js');
@@ -54,5 +55,12 @@ router.delete('/delete-brand/:id', authVerificationAdmin, brandController.delete
 router.post('/create-review', authVerificationUser, reviewController.createReview);
 router.get('/all-review/:per_page/:page_no', reviewController.allReview);
 router.get('/all-review-by-product/:product_id', reviewController.allReviewByProducts);
+
+// ===========For Cart==========
+router.post('/create-cart', authVerificationUser, cartController.createCart);
+router.get('/read-cart', authVerificationUser, cartController.readCart);
+router.put('/update-cart/:cart_id', authVerificationUser, cartController.updateCart);
+router.delete('/delete-cart/:cart_id', authVerificationUser, cartController.deleteCart);
+
 
 module.exports = router;

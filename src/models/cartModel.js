@@ -8,7 +8,7 @@ const DataSchema = new mongoose.Schema(
         color: { type: String, required: true },
         size: { type: String, required: true },
         qty: { type: Number, required: true },
-        price: { type: Number, required: true },
+        price: { type: Number },
     },
     {
         timestamps: true,
