@@ -9,6 +9,7 @@ const categoryController = require('../controllers/categoryController.js');
 const brandController = require('../controllers/brandController.js');
 const reviewController = require('../controllers/reviewController.js');
 const cartController = require('../controllers/cartController.js');
+const invoiceController = require('../controllers/invoiceController.js');
 
 const authVerificationAdmin = require('../middlewares/authVerificationAdmin.js');
 const authVerificationUser = require('../middlewares/authVerificationUser.js');
@@ -61,6 +62,17 @@ router.post('/create-cart', authVerificationUser, cartController.createCart);
 router.get('/read-cart', authVerificationUser, cartController.readCart);
 router.put('/update-cart/:cart_id', authVerificationUser, cartController.updateCart);
 router.delete('/delete-cart/:cart_id', authVerificationUser, cartController.deleteCart);
+
+// ===========For Invoice & Payment==========
+//For user
+router.post('/create-invoice', authVerificationUser, invoiceController.createInvoice);
+router.get('/read-all-invoice-single-user/:per_page/:page_no', authVerificationUser, invoiceController.readAllInvoiceSingleUser);
+router.get('/read-single-invoice-single-user/:invoice_id', authVerificationUser, invoiceController.readSignleInvoiceSingleUser);
+router.get('/read-invoice-product-list-single-user/:per_page/:page_no', authVerificationUser, invoiceController.readInvoiceProductListSingleUser);
+router.post('/payment-success/:trx_id', invoiceController.paymentSuccess);
+router.post('/payment-cancel/:trx_id', invoiceController.paymentCancel);
+router.post('/payment-fail/:trx_id', invoiceController.paymentFail);
+router.post('/payment-ipn/:trx_id', invoiceController.paymentIpn);
 
 
 module.exports = router;
