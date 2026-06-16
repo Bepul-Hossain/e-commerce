@@ -5,6 +5,7 @@ const axios = require("axios");
 const productModel = require("../models/productModel");
 const invoiceModel = require("../models/invoiceModel");
 const invoiceProductModel = require("../models/invoiceProductModel");
+const { Parser } = require("json2csv")
 const ObjectId = mongoose.Types.ObjectId;
 
 let redirect_url = "/cart-thank-you"
@@ -352,7 +353,7 @@ exports.paymentSuccess = async (req, res) => {
         let trx_id = req.params.trx_id;
         await invoiceModel.updateOne({ tran_id: trx_id }, { $set: { payment_status: "success" } });
 
-        res.redirect(redirect_url )
+        res.redirect(redirect_url)
     } catch (error) {
         console.error(error);
         res.status(500).json({
@@ -368,7 +369,7 @@ exports.paymentCancel = async (req, res) => {
         let trx_id = req.params.trx_id;
         await invoiceModel.updateOne({ tran_id: trx_id }, { $set: { payment_status: "cancel" } });
 
-        res.redirect(redirect_url )
+        res.redirect(redirect_url)
     } catch (error) {
         console.error(error);
         res.status(500).json({
@@ -384,7 +385,7 @@ exports.paymentFail = async (req, res) => {
         let trx_id = req.params.trx_id;
         await invoiceModel.updateOne({ tran_id: trx_id }, { $set: { payment_status: "fail" } });
 
-        res.redirect(redirect_url )
+        res.redirect(redirect_url)
     } catch (error) {
         console.error(error);
         res.status(500).json({
@@ -404,6 +405,205 @@ exports.paymentIpn = async (req, res) => {
             success: true,
             message: "Here do something. you have to need.",
         })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            error: error.toString(),
+            message: "Something went wrong.",
+        });
+    }
+}
+
+// All order list by date filter
+exports.allOrderList = async (req, res) => {
+    try {
+        const page_no = Number(req.params.page_no) || 1;
+        const per_page = Number(req.params.per_page) || 10;
+        const skipRow = (page_no - 1) * per_page;
+
+        const { from, to } = req.query;
+        // Single match: if no date, show all invoices
+        const fromDate = from ? new Date(`${from}T00:00:00`) : new Date('1970-01-01T00:00:00');
+        const toDate = to ? new Date(`${to}T23:59:59`) : new Date();
+
+        const matchStage = {
+            createdAt: {
+                $gte: fromDate,
+                $lte: toDate
+            }
+        }
+
+        let joinStageWithProduct = {
+            $lookup: {
+                from: "invoicesproducts",
+                localField: "_id",
+                foreignField: "invoice_id",
+                as: "product",
+            }
+        }
+        //$facet for total count * paginated date
+
+        const facetStage = {
+            $facet: {
+                totalCount: [{ $count: "count" }],
+                products: [
+                    { $sort: { createdAt: -1 } },
+                    { $skip: skipRow },
+                    { $limit: per_page },
+                    joinStageWithProduct
+                ],
+            }
+        }
+
+        // Aggregate pipline
+        const products = await invoiceModel.aggregate([{ $match: matchStage }, facetStage]);
+
+        res.status(200).json({
+            success: true,
+            message: "Invoice product list retrieved successfully.",
+            data: products[0],
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            error: error.toString(),
+            message: "Something went wrong.",
+        });
+    }
+}
+
+// export csv
+
+exports.exportCSV = async (req, res) => {
+    try {
+        const { from, to } = req.query;
+        // Single match: if no date, show all invoices
+        const fromDate = from ? new Date(`${from}T00:00:00`) : new Date('1970-01-01T00:00:00');
+        const toDate = to ? new Date(`${to}T23:59:59`) : new Date();
+
+        const matchStage = {
+            createdAt: {
+                $gte: fromDate,
+                $lte: toDate
+            }
+        }
+
+        //Get invoices
+        const data = await invoiceModel.find(matchStage).sort({ createdAt: -1 });
+        //Select columns for csv
+        const fields = [
+            "_id",
+            "user_id",
+            "payable",
+            "delivery_status",
+            "payment_status",
+            "total",
+            "vat",
+            "createdAt"
+        ]
+        //Convert to csv
+        const parser = new Parser({ fields });
+        const csv = parser.parse(data);
+
+        //Send file
+        res.header('Content-Type', 'text/csv');
+        res.attachment('invoices.csv');
+        res.send(csv);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            error: error.toString(),
+            message: "Something went wrong.",
+        });
+    }
+}
+
+// invoice update
+exports.updateInvoice = async (req, res) => {
+    try {
+        const { _id, user_id, delivery_status } = req.body;
+        //Step 1: Find the invoice
+        const checkInvoice = await invoiceModel.findById(_id);
+        if (!checkInvoice) {
+            return res.status(404).json({
+                success: false,
+                message: "Invoice not found.",
+            });
+        }
+        //Step 2: Prevent multiple update
+        if (checkInvoice.delivery_status === "delivered") {
+            return res.status(400).json({
+                success: false,
+                message: "Invoice already delivered.",
+            });
+        }
+        if (checkInvoice.delivery_status === "cancel") {
+            return res.status(400).json({
+                success: false,
+                message: "Invoice already cancel.",
+            });
+        }
+        //Step 3: Handle logic based on payment_status
+        const paymentStatus = checkInvoice.payment_status;
+        if (paymentStatus === "success") {
+            // Payment successfull: allow delivery or cancel
+            if (delivery_status === "delivered") {
+                const data = await invoiceModel.findByIdAndUpdate(
+                    { _id, user_id },
+                    { delivery_status },
+                    { new: true }
+                )
+                res.status(200).json({
+                    success: true,
+                    message: "Invoice updated successfully.",
+                    data,
+                })
+            } else if (delivery_status === "cancel") {
+                return res.status(400).json({
+                    success: false,
+                    message: "Payment is successfull, you can't cancel the invoice.",
+                })
+            }
+            return res.status(400).json({
+                success: false,
+                message: "Invalid velivery status update.",
+            })
+        } else {
+            // Payment not successfull. Allow only cancel
+            if (delivery_status === "cancel") {
+                const invoiceProducts = await invoiceProductModel.find(
+                    { invoice_id: _id }
+                )
+                // Restock each product
+                for(const item of invoiceProducts){
+                    await productModel.updateOne(
+                        { _id: item.product_id },
+                        { $inc: { stock: item.qty } }
+                    )
+                }
+
+                // Update invoice as cancelled
+                const data = await invoiceModel.findByIdAndUpdate(
+                    { _id, user_id },
+                    { delivery_status },
+                    { new: true }
+                )
+
+                res.status(200).json({
+                    success: true,
+                    message: "Unpaid order cancelled and restocked successfully.",
+                    data,
+                })
+            }
+            return res.status(400).json({
+                success: false,
+                message: "Cannot deliver because payment is not successfull.",
+            }) 
+        }
+
     } catch (error) {
         console.error(error);
         res.status(500).json({

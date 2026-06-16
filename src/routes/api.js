@@ -10,9 +10,12 @@ const brandController = require('../controllers/brandController.js');
 const reviewController = require('../controllers/reviewController.js');
 const cartController = require('../controllers/cartController.js');
 const invoiceController = require('../controllers/invoiceController.js');
+const fileController = require('../controllers/fileController.js');
+const dashboardSummaryController = require('../controllers/dashboardSummaryController.js');
 
 const authVerificationAdmin = require('../middlewares/authVerificationAdmin.js');
 const authVerificationUser = require('../middlewares/authVerificationUser.js');
+const fileUpload = require('../middlewares/fileUpload.js');
 
 
 // ===========For Super Admin==========
@@ -74,5 +77,17 @@ router.post('/payment-cancel/:trx_id', invoiceController.paymentCancel);
 router.post('/payment-fail/:trx_id', invoiceController.paymentFail);
 router.post('/payment-ipn/:trx_id', invoiceController.paymentIpn);
 
+// For admin
+router.get('/all-order-list/:per_page/:page_no', authVerificationAdmin, invoiceController.allOrderList);
+router.get('/export-csv', authVerificationAdmin, invoiceController.exportCSV);
+router.put('/update-invoice', authVerificationAdmin, invoiceController.updateInvoice);
+
+// File upload
+router.post('/file-upload', authVerificationAdmin, fileUpload, fileController.fileUpload);
+router.get('/all-file/:per_page/:page_no', fileController.allFile);
+router.post('/file-remove', authVerificationAdmin, fileController.fileRemove);
+
+// dashboard Summary
+router.get('/dashboard-summary', authVerificationAdmin, dashboardSummaryController.dashboadSummary);
 
 module.exports = router;
