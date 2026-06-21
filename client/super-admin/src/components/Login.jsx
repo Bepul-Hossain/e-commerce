@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 import adminstore from "../store/adminStore";
 import { useState } from "react";
-import { ErrorToast, IsEmail } from "../helper/helper";
+import { ErrorToast, IsEmpty } from "../helper/helper";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const Login = () => {
 
   let userSubmit = async () => {
     for (const { field, message } of validations) {
-      if (field === "email" && !IsEmail(field)) {
+      if (IsEmpty(field)) {
         return ErrorToast(message);
       }
     }

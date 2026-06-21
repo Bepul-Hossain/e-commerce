@@ -142,7 +142,7 @@ exports.update = async (req, res) => {
         const _id = req.headers._id;
 
         let updatedData = { email }
-        const user = await adminModel.findOne({ email, _id });
+        const user = await adminModel.findOne({ _id });
         if (!user) {
             return res.status(404).json({
                 success: false,

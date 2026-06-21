@@ -1,4 +1,30 @@
+import { useEffect, useState } from "react";
+import { ErrorToast, IsEmpty } from "../helper/helper";
+import adminStore from "../store/adminStore";
+
 const ProfileInner = () => {
+  let { adminUpdateLoading, adminUpdateRequest, admin } = adminStore();
+  let [data, setData] = useState({ email: "", password: "" });
+  const validations = [
+    { field: data.email, message: "Email is required!" },
+    { field: data.password, message: "Password is required!" },
+  ]
+  useEffect(() => {
+    if (admin) {
+      setData({
+        email: admin?.email,
+        password: "",
+      });
+    }
+  }, [admin])
+  let adminSubmit = async () => {
+    for (const { field, message } of validations) {
+      if (IsEmpty(field)) {
+        return ErrorToast(message);
+      }
+    }
+    await adminUpdateRequest(data);
+  }
   return (
     <>
       {/* Cover Photo Start */}
@@ -34,6 +60,8 @@ const ProfileInner = () => {
                             </label>
                             <div className="position-relative">
                               <input
+                                onChange={(e) => setData({ ...data, email: e.target.value })}
+                                value={data.email}
                                 type="email"
                                 className="common-input common-input--withIcon common-input--withLeftIcon "
                               />
@@ -54,6 +82,7 @@ const ProfileInner = () => {
                             </label>
                             <div className="position-relative">
                               <input
+                                onChange={(e) => setData({ ...data, password: e.target.value })}
                                 type="password"
                                 className="common-input common-input--withIcon common-input--withLeftIcon "
                                 id="new-password"
@@ -62,8 +91,11 @@ const ProfileInner = () => {
                           </div>
 
                           <div className="col-sm-12 text-end">
-                            <button className="btn btn-main btn-lg  pill">
-                              Update Profile
+                            <button
+                              onClick={adminSubmit}
+                              disabled={adminUpdateLoading}
+                              className="btn btn-main btn-lg  pill">
+                              {adminUpdateLoading ? "Loading..." : "Update Profile"}
                             </button>
                           </div>
                         </div>
