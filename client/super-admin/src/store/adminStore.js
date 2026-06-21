@@ -123,10 +123,8 @@ const adminStore = create((set) => ({
                 creadedentials: "include",
             });
             if (res?.data?.success === true) {
-                // window.location.href = "/super-admin/login";
                 return true
             } else {
-                ErrorToast(res?.data?.message);
                 return false
             }
         } catch (error) {

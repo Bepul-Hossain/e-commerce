@@ -3,20 +3,20 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaRegUser } from "react-icons/fa6";
 import ThemeToggle from "../components/ThemeToggle";
 import { FaAngleRight } from "react-icons/fa";
-// import adminStore from "../store/adminStore";
+import adminStore from "../store/adminStore";
 
 const MasterLayout = ({ children }) => {
   let [active, setActive] = useState(false);
   let [show, setShow] = useState(false);
   const navigate = useNavigate();
 
-  // let { adminLogoutRequest } = adminStore();
+  let { adminLogoutRequest } = adminStore();
 
-  let logout = () => {
-    // let res = adminLogoutRequest();
-    // if (res) {
-    //   navigate("/login");
-    // }
+  let logout = async() => {
+    let res = await adminLogoutRequest();
+    if (res) {
+      navigate("/login");
+    }
   };
 
   let dashboardControl = () => {
