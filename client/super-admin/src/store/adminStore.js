@@ -35,7 +35,7 @@ const adminStore = create((set) => ({
     adminLoginRequest: async (data) => {
         try {
             set({ adminLoginLoading: true })
-            let res = await axios.post(baseURL + "admin-login", data, {
+            let res = await axios.post(baseURL + "/admin-login", data, {
                 withCredentials: true,
                 creadedentials: "include",
             });
@@ -59,7 +59,7 @@ const adminStore = create((set) => ({
     // admin verify
     adminVerifyRequest: async () => {
         try {
-            await axios.get(baseURL + "admin-verify", {
+            await axios.get(baseURL + "/admin-verify", {
                 withCredentials: true,
                 creadedentials: "include",
             });

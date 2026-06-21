@@ -12,9 +12,6 @@ const PrivateRoute = ({ children }) => {
       try {
         await adminVerifyRequest();
         let result = getToken();
-
-        console.log(result);
-
         if (result) {
           setIsLogin(true);
         } else {
@@ -28,7 +25,7 @@ const PrivateRoute = ({ children }) => {
         setLoading(false); // Set loading to false after verification
       }
     })();
-  }, []);
+  }, [adminVerifyRequest]);
 
   if (loading) {
     return <></>;

@@ -20,7 +20,7 @@ const fileUpload = require('../middlewares/fileUpload.js');
 
 // ===========For Super Admin==========
 router.post('/admin-register', adminController.register);
-router.get('/admin-login', adminController.login);
+router.post('/admin-login', adminController.login);
 router.get('/admin', authVerificationAdmin, adminController.admin);
 router.get('/admin-verify', authVerificationAdmin, adminController.adminVerify);
 router.get('/admin-logout', authVerificationAdmin, adminController.logout);

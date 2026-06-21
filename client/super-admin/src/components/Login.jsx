@@ -1,7 +1,30 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
+import adminstore from "../store/adminStore";
+import { useState } from "react";
+import { ErrorToast, IsEmail } from "../helper/helper";
 
 const Login = () => {
+  const navigate = useNavigate();
+  let { adminLoginLoading, adminLoginRequest } = adminstore();
+  let [data, setData] = useState({ email: "", password: "" });
+  // Validation rules
+  const validations = [
+    { field: data.email, message: "Email is required!" },
+    { field: data.password, message: "Password is required!" },
+  ]
+
+  let userSubmit = async () => {
+    for (const { field, message } of validations) {
+      if (field === "email" && !IsEmail(field)) {
+        return ErrorToast(message);
+      }
+    }
+    let res = await adminLoginRequest(data);
+    if (res) {
+      navigate("/");
+    }
+  }
   return (
     <>
       {/* ================================== Account Page Start =========================== */}
@@ -62,6 +85,7 @@ const Login = () => {
                   </label>
                   <div className="position-relative">
                     <input
+                      onChange={(e) => setData({ ...data, email: e.target.value })}
                       required
                       type="email"
                       className="common-input common-input--bg common-input--withIcon"
@@ -85,6 +109,7 @@ const Login = () => {
                   </label>
                   <div className="position-relative">
                     <input
+                      onChange={(e) => setData({ ...data, password: e.target.value })}
                       required
                       type="password"
                       className="common-input common-input--bg common-input--withIcon"
@@ -105,9 +130,10 @@ const Login = () => {
 
                 <div className="col-12">
                   <button
+                    disabled={adminLoginLoading}
+                    onClick={userSubmit}
                     className="btn btn-main btn-lg w-100 pill"
-                  >
-                    Sign In
+                  > {adminLoginLoading ? "Loading...⟳" : "Sign In"}
                   </button>
                 </div>
               </div>
