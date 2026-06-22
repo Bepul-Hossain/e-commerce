@@ -39,8 +39,10 @@ const brandStore = create((set) => ({
                 credentials: "include",
             })
             if (res?.data?.success === true) {
-                set({ allBrand: res?.data?.data?.brands, })
-                set({ totalBrand: res?.data?.data?.totalCount?.[0]?.count })
+                set({
+                    allBrand: res?.data?.data?.brands,
+                    totalBrand: res?.data?.data?.totalCount?.[0]?.count
+                })
                 return true
             }
         } catch (error) {

@@ -9,8 +9,6 @@ const DashboardInner = () => {
     })()
   }, [dashboardRequest])
 
-  console.log(dashboard);
-  
   return (
     <section className="p-5">
       <div className="row g-4">
