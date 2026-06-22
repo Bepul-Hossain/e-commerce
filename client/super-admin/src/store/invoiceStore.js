@@ -98,8 +98,8 @@ const invoiceStore = create((set) => ({
     //read single invoice single user
     readSingleInvoiceSingleUser: null,
     singleInvoiceSingleUserRequest: async (id) => {
-        try {
-            let res = await axios.get(baseURL + `/read-signle-invoice-single-user/${id}`, {
+        try {            
+            let res = await axios.get(baseURL + `/read-single-invoice-single-user/${id}`, {
                 withCredentials: true,
                 credentials: "include",
             })

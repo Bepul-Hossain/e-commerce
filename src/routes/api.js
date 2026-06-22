@@ -70,7 +70,7 @@ router.delete('/delete-cart/:cart_id', authVerificationUser, cartController.dele
 //For user
 router.post('/create-invoice', authVerificationUser, invoiceController.createInvoice);
 router.get('/read-all-invoice-single-user/:per_page/:page_no', authVerificationUser, invoiceController.readAllInvoiceSingleUser);
-router.get('/read-single-invoice-single-user/:invoice_id', authVerificationUser, invoiceController.readSignleInvoiceSingleUser);
+router.get('/read-single-invoice-single-user/:invoice_id', authVerificationAdmin, invoiceController.readSignleInvoiceSingleUser);
 router.get('/read-invoice-product-list-single-user/:per_page/:page_no', authVerificationUser, invoiceController.readInvoiceProductListSingleUser);
 router.post('/payment-success/:trx_id', invoiceController.paymentSuccess);
 router.post('/payment-cancel/:trx_id', invoiceController.paymentCancel);

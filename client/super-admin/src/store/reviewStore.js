@@ -39,8 +39,8 @@ const reviewStore = create((set) => ({
                 credentials: "include",
             })
             if (res?.data?.success === true) {
-                set({ allReview: res?.data?.data?.data, })
-                set({ totalReview: res?.data?.data?.totalCount?.[0]?.count })
+                set({ allReview: res?.data?.data?.[0]?.data })
+                set({ totalReview: res?.data?.data?.[0]?.totalCount?.[0]?.count })
                 return true
             }
         } catch (error) {

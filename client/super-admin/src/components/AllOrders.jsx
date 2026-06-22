@@ -1,6 +1,91 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import { baseURL } from "../helper/config";
+import { ToWords } from "to-words"
+import { ErrorToast, formatDate } from "../helper/helper";
 import Paginate from "../helper/Paginate";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import invoiceStore from "../store/invoiceStore";
+import { useReactToPrint } from "react-to-print"
 
 const AllOrders = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const per_page = 6;
+  const page_no = searchParams.get("page_no") || 1;
+  let [fromDate, setFromDate] = useState("");
+  let [toDate, setToDate] = useState("");
+
+  let {
+    allOrderListRequest,
+    allOrderList,
+    totalAllOrderList,
+    readSingleInvoiceSingleUser,
+    singleInvoiceSingleUserRequest,
+  } = invoiceStore();
+
+  useEffect(() => {
+    (async () => {
+      await allOrderListRequest(per_page, page_no, fromDate, toDate);
+    })()
+  }, [allOrderListRequest, per_page, page_no, fromDate, toDate]);
+  //Pagination function
+  const handelPageClick = async (event) => {
+    let page_no = event.selected + 1;
+    await allOrderListRequest(per_page, page_no, fromDate, toDate);
+    navigate(`/all-orders?page_no=${page_no}`);
+  }
+  // const handelPageClick = () => {
+  //   let page_no = event.selected + 1;
+  //   allOrderRequest(per_page, page_no);
+  //   navigate(`/all-orders?page_no=${page_no}`);
+  // };
+
+  const handlDownload = () => {
+    try {
+      let url = baseURL + "/export-csv";
+      if (fromDate && toDate) {
+        url = url + `?from=${fromDate}&to=${toDate}`
+      }
+      window.open(url, "_blank");
+    } catch (error) {
+      console.log(error);
+      ErrorToast("Something went wrong.");
+    }
+  }
+
+  let viewOrder = (id) => {
+    singleInvoiceSingleUserRequest(id);
+  }
+  const toWords = new ToWords({
+    localeCode: "en-US",
+    converterOptions: {
+      currency: true,
+      currencyOptions: {
+        name: "Taka",
+        plural: "Taka",
+        symbol: "Tk",
+        fractionalUnit: {
+          name: "Paisa",
+          plural: "Paisa",
+          symbol: "",
+        },
+      },
+    },
+  });
+
+  const componentRef = useRef(null);
+  const printfn = useReactToPrint({
+    contentRef: componentRef,
+    documentTitle: "Invoice",
+
+  })
+  const handlePrint = () => {
+    if (!componentRef.current) {
+      console.error("componentRef is null");
+      return;
+    }
+    printfn();
+  };
   return (
     <div className="dashboard-body__content">
       {/* ========================= Statement section start =========================== */}
@@ -11,7 +96,8 @@ const AllOrders = () => {
             <input
               type="date"
               className="form-control"
-              value={"December 17, 2025"}
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
             />
           </div>
 
@@ -20,12 +106,13 @@ const AllOrders = () => {
             <input
               type="date"
               className="form-control"
-              value={"December 17, 2025"}
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
             />
           </div>
 
           <div className="col-md-3 text-center">
-            <button className="btn d-block btn-primary px-4 mt-2">
+            <button onClick={handlDownload} className="btn d-block btn-primary px-4 mt-2">
               Download CSV
             </button>
           </div>
@@ -50,54 +137,58 @@ const AllOrders = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>December 1, 2025</td>
-                      <td>Alex Johnson</td>
+                    {allOrderList && allOrderList?.map((item, index) => (
+                      <tr key={index}>
+                        <td>December 1, 2025</td>
+                        <td>Alex Johnson</td>
 
-                      <td>
-                        <span>1</span>
-                      </td>
-                      <td>
-                        <span
-                          className={`badge text-capitalize rounded-pill bg-success`}
-                        >
-                          success
-                        </span>{" "}
-                      </td>
-                      <td>
-                        <span
-                          className={`badge text-capitalize rounded-pill bg-warning`}
-                        >
-                          Pending
-                        </span>
-                      </td>
-                      <td>
-                        <button>
-                          <select
-                            // disabled={item?.deliver_status === "cancel"}
-                            className=" common-input border custom"
-                            defaultValue={"pending"}
+                        <td>
+                          <span>1</span>
+                        </td>
+                        <td>
+                          <span
+                            className={`badge text-capitalize rounded-pill bg-success`}
                           >
-                            <option value={"pending"}>Pending</option>
-                            <option value={"delivered"}>Delivered</option>
-                            <option value={"cancel"}>Cancel</option>
-                          </select>
-                        </button>
-                      </td>
+                            success
+                          </span>{" "}
+                        </td>
+                        <td>
+                          <span
+                            className={`badge text-capitalize rounded-pill bg-warning`}
+                          >
+                            Pending
+                          </span>
+                        </td>
+                        <td>
+                          <button>
+                            <select
+                              // disabled={item?.deliver_status === "cancel"}
+                              className=" common-input border custom"
+                              defaultValue={"pending"}
+                            >
+                              <option value={"pending"}>Pending</option>
+                              <option value={"delivered"}>Delivered</option>
+                              <option value={"cancel"}>Cancel</option>
+                            </select>
+                          </button>
+                        </td>
 
-                      <td>
-                        <p> 1000</p>
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-success"
-                          data-bs-toggle="modal"
-                          data-bs-target={`#exampleModal_1`}
-                        >
-                          View
-                        </button>
-                      </td>
-                    </tr>
+                        <td>
+                          <p> 1000</p>
+                        </td>
+                        <td>
+                          <button
+                            className="btn btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#exampleModal_1`}
+                            onClick={() => viewOrder(item?._id)}
+                          >
+                            View
+                          </button>
+                        </td>
+                      </tr>
+
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -142,16 +233,16 @@ const AllOrders = () => {
                     <div className="col-12">
                       <div className="container my-5">
                         {/* Invoice Content */}
-                        <div className="p-5 bg-white">
+                        <div className="p-5 bg-white" ref={componentRef}>
                           {/* Header */}
                           <div className="row mb-4 border-bottom pb-3">
                             <div className="col-sm-6">
                               <h2 className="fw-bold">INVOICE</h2>
-                              <p className="mb-0">#INV no: 1</p>
+                              <p className="mb-0">#INV no: {readSingleInvoiceSingleUser?._id}</p>
                               <p className="mb-0">
-                                #TRA no: f43rffd44rrrt3333bg
+                                #TRA no: {readSingleInvoiceSingleUser?.tran_id}
                               </p>
-                              <small>Date: 01/01/2025</small>
+                              <small>Date: {formatDate(readSingleInvoiceSingleUser?.createdAt)}</small>
                             </div>
                             <div className="col-sm-6 text-end">
                               <h5 className="fw-bold">PixBO</h5>
@@ -165,12 +256,12 @@ const AllOrders = () => {
                           <div className="row mb-4">
                             <div className="col-sm-6">
                               <h6 className="fw-bold">Bill To:</h6>
-                              <p className="mb-0">Alex Johnson</p>
+                              <p className="mb-0">{readSingleInvoiceSingleUser?.cus_details?.[0].Name}</p>
 
-                              <p className="mb-0">alex.johnson@example.com</p>
-                              <p className="mb-0">+880 9876 543 210</p>
+                              <p className="mb-0">{readSingleInvoiceSingleUser?.cus_details?.[0].Email}</p>
+                              <p className="mb-0">{readSingleInvoiceSingleUser?.cus_details?.[0].Phone}</p>
                               <p className="mb-0">
-                                123 Main Street, Chittagong
+                                {readSingleInvoiceSingleUser?.cus_details?.[0].Address}
                               </p>
                             </div>
                             <div className="col-sm-6 text-end">
@@ -178,23 +269,32 @@ const AllOrders = () => {
                               <p className="mb-1">
                                 Payment Status:{" "}
                                 <span
-                                  className={`fw-bold  text-capitalize text-success`}
+                                  className={`fw-bold  text-capitalize ${readSingleInvoiceSingleUser?.payment_status ===
+                                    "success"
+                                    ? "text-success"
+                                    : readSingleInvoiceSingleUser?.payment_status ===
+                                      "cancel" ? "text-danger" : "text-warning"
+                                    }`}
                                 >
-                                  success
+                                  {readSingleInvoiceSingleUser?.payment_status}
                                 </span>
                               </p>
                               <p className="mb-1">
                                 Deliver Status:{" "}
                                 <span
-                                  className={`fw-bold text-capitalize bg-success`}
+                                  className={`fw-bold text-capitalize ${readSingleInvoiceSingleUser?.deliver_status ===
+                                    "delivered" ? "text-success"
+                                    : readSingleInvoiceSingleUser?.deliver_status ===
+                                      "pending" ? "text-warning" : "text-danger"
+                                    }`}
                                 >
-                                  delivered
+                                  {readSingleInvoiceSingleUser?.delivery_status}
                                 </span>
                               </p>
                               <p className="mb-0">
                                 Total payable:{" "}
                                 <span className="fw-bold text-uppercase">
-                                  1500 tk.
+                                  {readSingleInvoiceSingleUser?.payable} tk.
                                 </span>
                               </p>
                             </div>
@@ -214,15 +314,18 @@ const AllOrders = () => {
                                 </tr>
                               </thead>
                               <tbody className="text-dark">
-                                <tr>
-                                  <td className="text-start">Baby Toy Car</td>
-
-                                  <td>Red</td>
-                                  <td>Medium</td>
-                                  <td>2</td>
-                                  <td>750 Tk.</td>
-                                  <td className="text-end">1500 Tk.</td>
-                                </tr>
+                                {
+                                  readSingleInvoiceSingleUser && readSingleInvoiceSingleUser?.invoicesproducts?.map((item, index) => (
+                                    <tr key={index}>
+                                      <td className="text-start">{item?.product_name}</td>
+                                      <td>{item?.color}</td>
+                                      <td>{item?.size}</td>
+                                      <td>{item?.qty}</td>
+                                      <td>{item?.price} Tk.</td>
+                                      <td className="text-end">{item?.price * item?.qty} Tk.</td>
+                                    </tr>
+                                  ))
+                                }
                               </tbody>
                             </table>
                           </div>
@@ -231,24 +334,26 @@ const AllOrders = () => {
                           <div className="row justify-content-end">
                             <div className="col-8">
                               <p className="text-danger small fst-italic">
-                                One thousand five hundred
+                                {readSingleInvoiceSingleUser &&
+                                  toWords.convert(readSingleInvoiceSingleUser?.total)
+                                }
                               </p>
                             </div>
                             <div className="col-4">
                               <ul className="list-unstyled">
                                 <li className="d-flex justify-content-between mb-2">
-                                  <span>Subtotal:</span> <span>1275 Tk.</span>
+                                  <span>Subtotal:</span> <span>{readSingleInvoiceSingleUser?.total} Tk.</span>
                                 </li>
                                 <li className="d-flex justify-content-between mb-2">
                                   <span>Vat (15%):</span>{" "}
-                                  <span>191.25 Tk.</span>
+                                  <span>{readSingleInvoiceSingleUser?.vat} Tk.</span>
                                 </li>
                                 <li className="d-flex justify-content-between mb-2">
                                   <span>Shipping cost:</span>{" "}
                                   <span>75 Tk.</span>
                                 </li>
                                 <li className="d-flex justify-content-between border-top pt-2 fw-bold">
-                                  <span>Total:</span> <span>1500 Tk.</span>
+                                  <span>Total:</span> <span>{readSingleInvoiceSingleUser?.payable} Tk.</span>
                                 </li>
                               </ul>
                             </div>
@@ -276,7 +381,7 @@ const AllOrders = () => {
                 >
                   Close
                 </button>
-                <button type="button" className="btn btn-primary">
+                <button onClick={handlePrint} type="button" className="btn btn-primary">
                   Print
                 </button>
               </div>
