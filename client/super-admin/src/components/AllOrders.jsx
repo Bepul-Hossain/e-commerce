@@ -6,6 +6,7 @@ import Paginate from "../helper/Paginate";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import invoiceStore from "../store/invoiceStore";
 import { useReactToPrint } from "react-to-print"
+import moment from "moment";
 
 const AllOrders = () => {
   const [searchParams] = useSearchParams();
@@ -21,6 +22,7 @@ const AllOrders = () => {
     totalAllOrderList,
     readSingleInvoiceSingleUser,
     singleInvoiceSingleUserRequest,
+    updateInvoiceRequest
   } = invoiceStore();
 
   useEffect(() => {
@@ -86,6 +88,13 @@ const AllOrders = () => {
     }
     printfn();
   };
+  // Update invoice
+  let updateInvoice = async (_id, user_id, delivery_status) => {
+    let res = await updateInvoiceRequest({ _id, user_id, delivery_status });
+    if (res) {
+      await allOrderListRequest(per_page, page_no, fromDate, toDate);
+    }
+  }
   return (
     <div className="dashboard-body__content">
       {/* ========================= Statement section start =========================== */}
@@ -139,30 +148,31 @@ const AllOrders = () => {
                   <tbody>
                     {allOrderList && allOrderList?.map((item, index) => (
                       <tr key={index}>
-                        <td>December 1, 2025</td>
-                        <td>Alex Johnson</td>
+                        <td>{moment(item?.created_at).format("DD-MM-YYYY")}</td>
+                        <td>{item?.name}</td>
 
                         <td>
-                          <span>1</span>
+                          <span>{item?._id}</span>
                         </td>
                         <td>
                           <span
                             className={`badge text-capitalize rounded-pill bg-success`}
                           >
-                            success
+                            {item?.payment_status}
                           </span>{" "}
                         </td>
                         <td>
                           <span
                             className={`badge text-capitalize rounded-pill bg-warning`}
                           >
-                            Pending
+                            {item?.delivery_status}
                           </span>
                         </td>
                         <td>
                           <button>
                             <select
                               // disabled={item?.deliver_status === "cancel"}
+                              onChange={(e) => updateInvoice(item?._id, item?.user_id, e.target.value)}
                               className=" common-input border custom"
                               defaultValue={"pending"}
                             >
@@ -174,7 +184,7 @@ const AllOrders = () => {
                         </td>
 
                         <td>
-                          <p> 1000</p>
+                          <p>{item?.total}</p>
                         </td>
                         <td>
                           <button

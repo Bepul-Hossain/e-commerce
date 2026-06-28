@@ -44,8 +44,8 @@ const fileStore = create((set) => ({
                 credentials: "include",
             })
             if (res?.data?.success === true) {
-                set({ totalFile: res?.data?.data?.files })
-                set({ allFile: res?.data?.data?.totalCount?.[0]?.count })
+                set({ allFile: res?.data?.data?.files })
+                set({ totalFile: res?.data?.data?.totalCount?.[0]?.count })
                 return true
             }
         } catch (error) {

@@ -1,7 +1,58 @@
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { baseURLFile } from "../helper/config";
-import { SuccessToast } from "../helper/helper";
+import { DeleteAlertFile, ErrorToast, SuccessToast } from "../helper/helper";
 import Paginate from "../helper/Paginate";
+import { useState } from "react";
+import fileStore from "../store/fileStore";
+import { useEffect } from "react";
+import Skeleton from "react-loading-skeleton";
+
 const FileManager = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [file, setFile] = useState(null);
+
+  const {
+    fileUploadRequest,
+    fileUploadLoading,
+    allFile,
+    allFileRequest,
+    totalFile,
+    fileRemoveRequest,
+  } = fileStore();
+
+  const per_page = 12;
+  const page_no = searchParams.get("page_no") || 1;
+
+  useEffect(() => {
+    (async () => {
+      await allFileRequest(per_page, page_no);
+    })()
+  }, [allFileRequest, page_no]);
+
+  // pagination function
+  const handelPageClick = async (event) => {
+    let page_no = event.selected + 1;
+    await allFileRequest(per_page, page_no);
+    navigate(`/file-manager?page_no=${page_no}`);
+  };
+
+  const handleUpload = async () => {
+    if (!file) {
+      ErrorToast("Please select a file");
+      return;
+    }
+    await fileUploadRequest(file);
+    await allFileRequest(per_page, page_no);
+  };
+
+  let deleteFile = async (_id, filename)=>{
+    let res = await DeleteAlertFile(fileRemoveRequest, _id, filename);
+    if(res){
+      await allFileRequest(per_page, page_no);
+    }
+  }
+
   return (
     <>
       {/* Cover Photo Start */}
@@ -22,11 +73,13 @@ const FileManager = () => {
                   <h4 className="mb-3">Upload Files</h4>
                   {/* Upload Input */}
                   <div className="mb-3">
-                    <input type="file" className="form-control" multiple />
+                    <input onChange={(e) => setFile(e.target.files[0])} type="file" className="form-control" multiple />
                   </div>
 
                   <div>
-                    <button className="btn btn-danger ">Upload File</button>
+                    <button onClick={handleUpload} disabled={fileUploadLoading} className="btn btn-danger ">
+                      {fileUploadLoading ? "Uploading..." : "Upload"}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -35,42 +88,84 @@ const FileManager = () => {
               <div className="dashboard-card">
                 <div className=" p-5">
                   <h4 className="mb-3">Image Gallery</h4>
-                  <div className="row g-3">
-                    <div className="col-2 col-xl-3 col-md-4 mb-5">
-                      <div className="card img_g shadow-sm position-relative">
-                        {/* Delete button */}
-                        <button
-                          className="btn  btn-danger position-absolute top-0 end-0 m-1 rounded-circle"
-                        >
-                          &times;
-                        </button>
+                  {
+                    allFile?.length === 0 && (
+                      <p className="text-muted text-center">
+                        No Images available
+                      </p>
+                    )
+                  }
+                  {
+                    allFile === null ? (
+                      <>
+                        {[...Array(6).map(() => (
+                          <div className="col-2 mb-5">
+                            <div className="Skeleton">
+                              <Skeleton count={8} />
+                            </div>
+                          </div>
+                        ))]}
+                      </>
+                    ) : (
+                      <>
+                        <div className="row g-3">
+                          {allFile?.map((item, index) => (
+                            <div key={index} className="col-2 col-xl-3 col-md-4 mb-5">
+                              <div className="card img_g shadow-sm position-relative">
+                                {/* Delete button */}
+                                <button
+                                  onClick={() => deleteFile(item?._id, item?.filename)}
+                                  className="btn  btn-danger position-absolute top-0 end-0 m-1 rounded-circle"
+                                >
+                                  &times;
+                                </button>
 
-                        {/* Image */}
-                        <img
-                          src={`https://placehold.co/100x100`}
-                          className="card-img-top"
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
+                                {/* Image */}
+                                <img
+                                  src={`${baseURLFile}/${item?.filename}`}
+                                  // src={`https://placehold.co/100x100`}
+                                  className="card-img-top"
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                  }}
+                                />
 
-                        {/* Card body */}
-                        <div className="card-body p-2 text-center">
-                          <p
-                            className="small text-truncate mb-0 text-primary"
-                            style={{ cursor: "pointer" }}
-                            title="Click to copy"
-                          >
-                            Image1.jpg
-                          </p>
+                                {/* Card body */}
+                                <div className="card-body p-2 text-center">
+                                  <p
+                                    className="small text-truncate mb-0 text-primary"
+                                    style={{ cursor: "pointer" }}
+                                    title="Click to copy"
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(
+                                        `${baseURLFile}/${item?.filename}`
+                                      );
+                                      SuccessToast("Copied: " + item?.filename);
+                                    }}
+                                  >
+                                    Image1.jpg
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      </div>
-                    </div>
-                  </div>
+                      </>
+                    )
+                  }
                   <nav aria-label="Page navigation example">
-                    <Paginate page_no={1} per_page={5} totalCount={10} />
+                    {
+                      allFile?.length > 1 && (
+                        <Paginate
+                          handelPageClick={handelPageClick}
+                          page_no={page_no}
+                          per_page={per_page}
+                          totalCount={totalFile}
+                        />
+                      )
+                    }
                   </nav>
                 </div>
               </div>
