@@ -1,8 +1,58 @@
 import { FaArrowRotateRight } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Paginate from "../helper/Paginate";
+import { useEffect, useState } from "react";
+import productStore from "../store/productStore";
+import categoryStore from "../store/categoryStore";
+import brandStore from "../store/brandStore";
+import { baseURLFile } from "../helper/config";
 
 const AllProduct = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [activeButton, setActiveButton] = useState("grid-view");
+  const [filter, setFilter] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const category_id = searchParams.get("category_id") || 0;
+  const brand_id = searchParams.get("brand_id") || 0;
+  const remark = searchParams.get("remark") || 0;
+  const keyword = searchParams.get("keyword") || 0;
+  const per_page = searchParams.get("per_page") || 12;
+  const page_no = searchParams.get("page_no") || 1;
+
+  let { allProductsRequest, allProducts, totalProducts } = productStore();
+  let { allCategory, allCategoryRequest } = categoryStore();
+  let { allBrand, allBrandRequest } = brandStore();
+
+  const handleClick = (buttonName) => {
+    setActiveButton(buttonName);
+  }
+
+  const handelPageClick = ({ selected }) => {
+    const params = Object.fromEntries(searchParams);
+    setSearchParams({ ...params, page_no: selected + 1 });
+  }
+
+  useEffect(() => {
+    (async () => allProductsRequest(
+      category_id,
+      brand_id,
+      remark,
+      keyword,
+      per_page,
+      page_no
+    ))();
+  }, [
+    allProductsRequest,
+    category_id,
+    brand_id,
+    remark,
+    keyword,
+    per_page,
+    page_no,
+  ]);
+
   return (
     <>
       <section className="breadcrumb breadcrumb-one padding-y-60 section-bg position-relative z-index-1 overflow-hidden">
@@ -26,7 +76,7 @@ const AllProduct = () => {
             <div className="col-lg-7">
               <div className="breadcrumb-one-content">
                 <h3 className="breadcrumb-one-content__title text-center mb-3 text-capitalize">
-                  10 products available for purchase
+                  {totalProducts || 0} products available for purchase
                 </h3>
                 <p className="breadcrumb-one-content__desc text-center text-black-three">
                   Explore the best Product available for sale. Our unique
@@ -48,7 +98,8 @@ const AllProduct = () => {
           </div>
         </div>
       </section>
-      <section className={`all-product padding-y-120`}>
+      <section className={`all-product padding-y-120 ${activeButton === "list-view" ? "list-view" : ""}`}
+      >
         <div className="container container-two">
           <div className="row">
             <div className="col-lg-12">
@@ -67,12 +118,16 @@ const AllProduct = () => {
 
                 <div className="list-grid d-flex align-items-center gap-2">
                   <button
-                    className={`list-grid__button list-button d-sm-flex d-none text-body`}
+                    className={`list-grid__button list-button d-sm-flex d-none text-body
+                    ${activeButton === "list-view" ? "active" : ""}`}
+                    onClick={() => handleClick("list-view")}
                   >
                     <i className="las la-list" />
                   </button>
                   <button
-                    className={`list-grid__button grid-button d-sm-flex d-none  text-body`}
+                    className={`list-grid__button grid-button d-sm-flex d-none  text-body
+                    ${activeButton === "grid-view" ? "active" : ""}`}
+                    onClick={() => handleClick("grid-view")}
                   >
                     <i className="las la-border-all" />
                   </button>
@@ -177,66 +232,81 @@ const AllProduct = () => {
                   tabIndex={0}
                 >
                   <div className="row gy-4 list-grid-wrapper">
-                    {[...Array(10)].map(() => (
-                      <div className="col-xl-3 col-lg-4 col-sm-6">
-                        <div className="product-item">
-                          <div className="product-item__thumb d-flex">
-                            <Link
-                              to={`/product-details?product_id=0`}
-                              className="link w-100"
-                            >
-                              <img
-                                src={`https://placehold.co/200x200`}
-                                alt=""
-                                className="cover-img"
-                              />
-                            </Link>
-                          </div>
-                          <div className="product-item__content">
-                            <h6 className="product-item__title">
+                    {allProducts?.length ? (
+                      allProducts.map((item, index) => (
+                        <div key={index} className="col-xl-3 col-lg-4 col-sm-6" key={item?._id}>
+                          <div className="product-item">
+                            <div className="product-item__thumb d-flex">
                               <Link
-                                to={`/product-details?product_id=0`}
-                                className="link"
+                                to={`/product-details?product_id=${item?._id}`}
+                                className="link w-100"
                               >
-                                Baby Sleeping Bag for Infant Boys Girls
+                                <img
+                                  src={
+                                    item?.images?.[0]
+                                      ? `${baseURLFile}/${item.images[0]}`
+                                      : `https://placehold.co/200x200`
+                                  }
+                                  alt={item?.title}
+                                  className="cover-img"
+                                />
                               </Link>
-                            </h6>
-                            <div className="product-item__info flx-between gap-2">
-                              <span className="product-item__author">
-                                <span className="link hover-text-decoration-underline">
-                                  Admin
-                                </span>
-                              </span>
                             </div>
-                            <div className="product-item__bottom flx-between  gap-2">
-                              <div className="flx-align gap-2">
-                                <h6 className="product-item__price mb-0">
-                                  ৳1230
-                                </h6>
-                                <span className="product-item__prevPrice text-decoration-line-through">
-                                  ৳1450
+                            <div className="product-item__content">
+                              <h6 className="product-item__title">
+                                <Link
+                                  to={`/product-details?product_id=${item?._id}`}
+                                  className="link"
+                                >
+                                  {item?.title}
+                                </Link>
+                              </h6>
+                              <div className="product-item__info flx-between gap-2">
+                                <span className="product-item__author">
+                                  <span className="link hover-text-decoration-underline">
+                                    Admin
+                                  </span>
+                                </span>
+                                <span className="product-item__author">
+                                  <span className="btn btn-main pill category">
+                                    {item?.category?.[0]?.category_name}
+                                  </span>
                                 </span>
                               </div>
-                              <Link
-                                to={`/product-details?product_id=0`}
-                                className="btn btn-outline-light btn-sm pill"
-                              >
-                                View Product
-                              </Link>
+                              <div className="product-item__bottom flx-between  gap-2">
+                                <div className="flx-align gap-2">
+                                  <h6 className="product-item__price mb-0">
+                                    ৳{item?.is_discount ? item?.discount_price : item?.price}
+                                  </h6>
+                                  {item?.is_discount && (
+                                    <span className="product-item__prevPrice text-decoration-line-through">
+                                      ৳{item?.price}
+                                    </span>
+                                  )}
+                                </div>
+                                <Link
+                                  to={`/product-details?product_id=${item?._id}`}
+                                  className="btn btn-outline-light btn-sm pill"
+                                >
+                                  View Product
+                                </Link>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))
+                    ) : (
+                      <div className="col-12 text-center">No products found.</div>
+                    )}
                   </div>
 
                   <nav aria-label="Page navigation example">
                     {/* Paginate */}
                     <Paginate
-                      handelPageClick={() => {}}
-                      page_no={1}
-                      per_page={5}
-                      totalCount={10}
+                      handelPageClick={handelPageClick}
+                      page_no={Number(page_no)}
+                      per_page={Number(per_page)}
+                      totalCount={totalProducts || 0}
                     />
                   </nav>
                 </div>
