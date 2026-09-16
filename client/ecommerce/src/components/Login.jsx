@@ -21,7 +21,7 @@ const Login = () => {
     }
     let res = await userLoginRequest(data);
     if (res) {
-      navigate("/dashboard-profile");
+      navigate("/dashboard-profile", { replace: true });
     }
   };
   return (
