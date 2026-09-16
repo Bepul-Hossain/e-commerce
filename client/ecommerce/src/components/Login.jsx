@@ -1,7 +1,29 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
+import userStore from "../store/userStore";
+import { ErrorToast, IsEmpty } from "../helper/helper";
+import { useState } from "react";
 
 const Login = () => {
+  let { userLoginLoading, userLoginRequest } = userStore();
+  let navigate = useNavigate();
+  let [data, setData] = useState({ email: "", password: "" });
+  // validation rules
+  const validations = [
+    { field: data.email, message: "Email is required!" },
+    { field: data.password, message: "Password is required!" },
+  ];
+  let userSubmit = async () => {
+    for (const { field, message } of validations) {
+      if (IsEmpty(field)) {
+        return ErrorToast(message);
+      }
+    }
+    let res = await userLoginRequest(data);
+    if (res) {
+      navigate("/dashboard-profile");
+    }
+  };
   return (
     <>
       {/* ================================== Account Page Start =========================== */}
@@ -59,6 +81,7 @@ const Login = () => {
                   </label>
                   <div className="position-relative">
                     <input
+                      onChange={(e) => setData({ ...data, email: e.target.value })}
                       required
                       type="email"
                       className="common-input common-input--bg common-input--withIcon"
@@ -79,6 +102,7 @@ const Login = () => {
                   </label>
                   <div className="position-relative">
                     <input
+                      onChange={(e) => setData({ ...data, password: e.target.value })}
                       required
                       type="password"
                       className="common-input common-input--bg common-input--withIcon"
@@ -95,8 +119,8 @@ const Login = () => {
                 </div>
 
                 <div className="col-12">
-                  <button className="btn btn-main btn-lg w-100 pill">
-                    Sign In
+                  <button onClick={userSubmit} disabled={userLoginLoading} className="btn btn-main btn-lg w-100 pill">
+                    {userLoginLoading ? "Loading..." : "Sign In"}
                   </button>
                 </div>
 

@@ -40,7 +40,7 @@ exports.register = async (req, res) => {
 // Login user
 exports.login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password } = req.query;
         const user = await userModel.findOne({ email });
         if (!user) {
             return res.status(401).json({

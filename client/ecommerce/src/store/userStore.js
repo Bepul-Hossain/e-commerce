@@ -35,10 +35,11 @@ const userStore = create((set) => ({
     userLoginRequest: async (data) => {
         try {
             set({ userLoginLoading: true })
-            let res = await axios.post(baseURL + "/user-login", data, {
+            let res = await axios.get(baseURL + "/user-login", {
+                params: data,
                 withCredentials: true,
-                creadedentials: "include",
             });
+            console.log("🚀 > userStore.js:44 > res:", res);
 
             if (res?.data?.success === true) {
                 set({ userLoginLoading: false })
@@ -50,7 +51,7 @@ const userStore = create((set) => ({
                 return false;
             }
         } catch (error) {
-            console.log(error);
+            console.log("error: ",error);
             set({ userLoginLoading: false })
             ErrorToast(error?.response?.data?.message);
             return false;

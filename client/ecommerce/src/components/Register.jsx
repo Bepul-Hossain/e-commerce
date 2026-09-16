@@ -1,7 +1,29 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
+import userStore from "../store/userStore";
+import { useState } from "react";
+import { ErrorToast, IsEmpty } from "../helper/helper";
 
 const Register = () => {
+  let { userRegisterLoading, userRegisterRequest } = userStore()
+  const navigate = useNavigate();
+  let [data, setData] = useState({ email: "", password: "" });
+  // validation rules
+  const validations = [
+    { field: data.email, message: "Email is required!" },
+    { field: data.password, message: "Password is required!" },
+  ];
+  let userSubmit = async () => {
+    for (const { field, message } of validations) {
+      if (IsEmpty(field)) {
+        return ErrorToast(message);
+      }
+    }
+    let res = await userRegisterRequest(data);
+    if (res) {
+      navigate("/login");
+    }
+  };
   return (
     <>
       {/* ================================== Account Page Start =========================== */}
@@ -59,6 +81,7 @@ const Register = () => {
                   </label>
                   <div className="position-relative">
                     <input
+                      onChange={(e) => setData({ ...data, email: e.target.value })}
                       required
                       type="email"
                       className="common-input common-input--bg common-input--withIcon"
@@ -79,6 +102,7 @@ const Register = () => {
                   </label>
                   <div className="position-relative">
                     <input
+                      onChange={(e) => setData({ ...data, password: e.target.value })}
                       required
                       type="password"
                       className="common-input common-input--bg common-input--withIcon"
@@ -95,8 +119,10 @@ const Register = () => {
                 </div>
 
                 <div className="col-12">
-                  <button className="btn btn-main btn-lg w-100 pill">
-                    Create An Account
+                  <button onClick={userSubmit} disabled={userRegisterLoading} className="btn btn-main btn-lg w-100 pill">
+                    {
+                      userRegisterLoading? "Loading": "Create An Account"
+                    }
                   </button>
                 </div>
 
