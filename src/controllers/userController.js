@@ -59,7 +59,6 @@ exports.login = async (req, res) => {
         }
 
         let token = EncodeToken(user.email, user._id.toString());
-        console.log("🚀 > userController.js:62 > token:", token);
         res.cookie("u_token", token, options);
         res.status(200).json({
             success: true,
