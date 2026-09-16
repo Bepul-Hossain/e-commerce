@@ -31,7 +31,7 @@ const ArrivalOne = () => {
         </div>
 
         <div className="row gy-4">
-          {allNewArrivalProducts.map((item,index) => (
+          {allNewArrivalProducts?.map((item,index) => (
             <div key={index} className="col-xl-3 col-lg-4 col-sm-6">
               <div className="product-item">
                 <div className="product-item__thumb d-flex">
