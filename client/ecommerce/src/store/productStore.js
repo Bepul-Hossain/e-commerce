@@ -32,6 +32,23 @@ const productStore = create((set) => ({
             return false
         }
     },
+    // all-new-arrival-products
+    allNewArrivalProducts: null,
+    newArrivalProductsRequest: async (item) => {
+        try {
+            let res = await axios.get(baseURL + `/all-products/0/0/0/0/${item}/1`, {
+                withCredentials: true,
+                credentials: "include",
+            })
+            if (res?.data?.success === true) {
+                set({ allNewArrivalProducts: res?.data?.data?.products, })
+                return true
+            }
+        } catch (error) {
+            console.log(error);
+            return false
+        }
+    },
     // single product
     singleProduct: null,
     singleProductRequest: async (id) => {

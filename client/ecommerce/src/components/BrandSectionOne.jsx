@@ -1,12 +1,16 @@
 import Slider from "react-slick";
+import brandStore from "../store/brandStore";
+import { useEffect } from "react";
+import { baseURLFile } from "../helper/config";
 const BrandSectionOne = () => {
-  const allBrand = [
-    { brand_img: "https://placehold.co/50x50", brand_name: "Jewellery" },
-    { brand_img: "https://placehold.co/50x50", brand_name: "Toy" },
-    { brand_img: "https://placehold.co/50x50", brand_name: "Laptop" },
-    { brand_img: "https://placehold.co/50x50", brand_name: "Computer" },
-    { brand_img: "https://placehold.co/50x50", brand_name: "Accessories" },
-  ];
+  let { allBrandRequest, allBrand } = brandStore();
+
+  useEffect(() => {
+    (async () => {
+      await allBrandRequest(100, 1);
+    }
+    )();
+  }, [allBrandRequest]);
 
   const settings = {
     dots: false,
@@ -64,7 +68,7 @@ const BrandSectionOne = () => {
                 key={index}
                 className="brand-item inner d-grid gap-2 text-center align-items-center justify-content-center"
               >
-                <img src={`${item?.brand_img}`} alt="brand" />
+                <img src={`${baseURLFile}/${item?.brand_img}`} alt="brand" />
                 <p>{item?.brand_name}</p>
               </div>
             ))}

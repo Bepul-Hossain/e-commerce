@@ -1,6 +1,18 @@
 import { Link } from "react-router-dom";
+import productStore from "../store/productStore";
+import { useEffect } from "react";
+import { baseURL } from "../helper/config";
 
 const ArrivalOne = () => {
+  let {allNewArrivalProducts, newArrivalProductsRequest} = productStore();
+  useEffect(() => {
+    (
+      async () => {
+        await newArrivalProductsRequest(8);
+      }
+    )()
+  }, [newArrivalProductsRequest]);
+  
   return (
     <section className="arrival-product padding-y-120 section-bg position-relative z-index-1">
       <img
@@ -19,16 +31,16 @@ const ArrivalOne = () => {
         </div>
 
         <div className="row gy-4">
-          {[...Array(6)].map((_,i) => (
-            <div key={i} className="col-xl-3 col-lg-4 col-sm-6">
+          {allNewArrivalProducts.map((item,index) => (
+            <div key={index} className="col-xl-3 col-lg-4 col-sm-6">
               <div className="product-item">
                 <div className="product-item__thumb d-flex">
                   <Link
-                    to={`/product-details?product_id=0`}
+                    to={`/product-details?product_id=${item?._id}`}
                     className="link w-100"
                   >
                     <img
-                      src={`https://placehold.co/200x200`}
+                      src={`${baseURL}/${item?.images[0]}`}
                       alt=""
                       className="cover-img"
                     />
@@ -36,8 +48,8 @@ const ArrivalOne = () => {
                 </div>
                 <div className="product-item__content">
                   <h6 className="product-item__title">
-                    <Link to={`/product-details?product_id=0`} className="link">
-                      Baby Sleeping Bag for Infant Boys Girls
+                    <Link to={`/product-details?product_id=${item?._id}`} className="link">
+                      {item?.title}
                     </Link>
                   </h6>
                   <div className="product-item__info flx-between gap-2">
@@ -49,13 +61,19 @@ const ArrivalOne = () => {
                   </div>
                   <div className="product-item__bottom flx-between  gap-2">
                     <div className="flx-align gap-2">
-                      <h6 className="product-item__price mb-0">৳1230</h6>
+                      <h6 className="product-item__price mb-0">
+                        {
+                          item?.discount ===false
+                            ? "৳" + item?.price
+                            : "৳" + item?.discount_price
+                        }
+                      </h6>
                       <span className="product-item__prevPrice text-decoration-line-through">
-                        ৳1450
+                        {item?.discount === false ? "" : "৳" + item?.price}
                       </span>
                     </div>
                     <Link
-                      to={`/product-details?product_id=0`}
+                      to={`/product-details?product_id=${item?._id}`}
                       className="btn btn-outline-light btn-sm pill"
                     >
                       View Product
