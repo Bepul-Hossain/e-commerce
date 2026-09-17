@@ -24,16 +24,7 @@ const AllProduct = () => {
   let { allProductsRequest, allProducts, totalProducts } = productStore();
   let { allCategory, allCategoryRequest } = categoryStore();
   let { allBrand, allBrandRequest } = brandStore();
-
-  const handleClick = (buttonName) => {
-    setActiveButton(buttonName);
-  }
-
-  const handelPageClick = ({ selected }) => {
-    const params = Object.fromEntries(searchParams);
-    setSearchParams({ ...params, page_no: selected + 1 });
-  }
-
+  
   useEffect(() => {
     (async () => allProductsRequest(
       category_id,
@@ -52,6 +43,30 @@ const AllProduct = () => {
     per_page,
     page_no,
   ]);
+
+  // pagination function
+  const handelPageClick = async (event) => {
+    let page_no = event.selected;
+    await allProductsRequest(
+      category_id,
+      brand_id,
+      remark,
+      keyword,
+      per_page,
+      page_no + 1
+    );
+
+    navigate(`/all-products?category_id=${category_id}&brand_id=${brand_id}&remark=${remark}&keyword=${keyword}&per_page=${per_page}&page_no=${page_no + 1}`);
+  }
+
+  // search function
+  const handleSearchClick = async () => {
+    navigate(`/all-products?category_id=${0}&brand_id=${0}&remark=${0}&keyword=${search}&per_page=${per_page}&page_no=1`);
+  }
+
+  const handleClick = (buttonName) => {
+    setActiveButton(buttonName);
+  }  
 
   return (
     <>
@@ -85,11 +100,12 @@ const AllProduct = () => {
                 </p>
                 <div className="search-box">
                   <input
+                    onChange={(e) => setSearch(e.target.value)}
                     type="text"
                     className="common-input common-input--lg pill shadow-sm"
                     placeholder="Search product & more..."
                   />
-                  <button className="btn btn-main btn-icon icon border-0">
+                  <button onClick={handleSearchClick} className="btn btn-main btn-icon icon border-0">
                     <img src="assets/images/icons/search.svg" alt="" />
                   </button>
                 </div>
@@ -234,7 +250,7 @@ const AllProduct = () => {
                   <div className="row gy-4 list-grid-wrapper">
                     {allProducts?.length ? (
                       allProducts.map((item, index) => (
-                        <div key={index} className="col-xl-3 col-lg-4 col-sm-6" key={item?._id}>
+                        <div className="col-xl-3 col-lg-4 col-sm-6" key={index}>
                           <div className="product-item">
                             <div className="product-item__thumb d-flex">
                               <Link

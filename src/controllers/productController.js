@@ -67,6 +67,7 @@ exports.allProduct = async (req, res) => {
         let brand_id = req.params.brand_id;
         let remark = req.params.remark;
         let keyword = req.params.keyword;
+        console.log("🚀 > productController.js:70 > keyword:", keyword);
 
         let skipRow = (page_no - 1) * per_page;
 
