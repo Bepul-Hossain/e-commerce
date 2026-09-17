@@ -103,9 +103,7 @@ exports.allProduct = async (req, res) => {
                 $or: searchParams
             }
             MatchingStage = {
-                $match: {
-                    title: searchStage,
-                }
+                $match: searchStage
             }
         } else {
             MatchingStage = {
@@ -151,7 +149,7 @@ exports.allProduct = async (req, res) => {
         }
 
         let products = await productModel.aggregate([MatchingStage, facetStage]);
-        let totalCount = products[0].totalCount[0].count;
+        let totalCount = products[0]?.totalCount[0]?.count || 0;
         res.status(200).json({
             success: true,
             message: "Products retrieved successfully.",
