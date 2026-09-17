@@ -11,7 +11,6 @@ const AllProduct = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [activeButton, setActiveButton] = useState("grid-view");
-  const [filter, setFilter] = useState(false);
   const [search, setSearch] = useState("");
 
   const category_id = searchParams.get("category_id") || 0;
@@ -24,7 +23,7 @@ const AllProduct = () => {
   let { allProductsRequest, allProducts, totalProducts } = productStore();
   let { allCategory, allCategoryRequest } = categoryStore();
   let { allBrand, allBrandRequest } = brandStore();
-  
+
   useEffect(() => {
     (async () => allProductsRequest(
       category_id,
@@ -43,6 +42,13 @@ const AllProduct = () => {
     per_page,
     page_no,
   ]);
+
+  useEffect(() => {
+    (async () => {
+      await allCategoryRequest(100, 1);
+      await allBrandRequest(100, 1);
+    })()
+  }, [allCategoryRequest, allBrandRequest]);
 
   // pagination function
   const handelPageClick = async (event) => {
@@ -64,9 +70,26 @@ const AllProduct = () => {
     navigate(`/all-products?category_id=${0}&brand_id=${0}&remark=${0}&keyword=${search}&per_page=${per_page}&page_no=1`);
   }
 
+  // category function
+  const handleCategoryClick = async (category_id) => {
+    navigate(`/all-products?category_id=${category_id}&brand_id=${0}&remark=${0}&keyword=${0}&per_page=${per_page}&page_no=1`);
+    await allProductsRequest(category_id, 0, 0, 0, per_page, 1);
+  }
+  // brand function
+  const handleBrandClick = async (brand_id) => {
+    navigate(`/all-products?category_id=${0}&brand_id=${brand_id}&remark=${0}&keyword=${0}&per_page=${per_page}&page_no=1`);
+    await allProductsRequest(0, brand_id, 0, 0, per_page, 1);
+  }
+
+  // reset function
+  const handleResetClick = async () => {
+    navigate(`/all-products?category_id=${0}&brand_id=${0}&remark=${0}&keyword=${0}&per_page=${per_page}&page_no=1`);
+    await allProductsRequest(0, 0, 0, 0, per_page, 1);
+  }
+
   const handleClick = (buttonName) => {
     setActiveButton(buttonName);
-  }  
+  }
 
   return (
     <>
@@ -122,6 +145,7 @@ const AllProduct = () => {
               <div className="filter-tab gap-3 flx-between">
                 <div className="gap-3 flx-between">
                   <button
+                    onClick={handleResetClick}
                     type="button"
                     className="filter-tab__button btn btn-outline-light pill d-flex align-items-center"
                   >
@@ -174,31 +198,15 @@ const AllProduct = () => {
                     </button>
                     <div className="filter-sidebar__content">
                       <ul className="filter-sidebar-list">
-                        <li className="filter-sidebar-list__item courser">
-                          <span className="filter-sidebar-list__text">
-                            Home Appliances <span className="qty">2</span>
-                          </span>
-                        </li>
-                        <li className="filter-sidebar-list__item courser">
-                          <span className="filter-sidebar-list__text">
-                            Jewellery <span className="qty">0</span>
-                          </span>
-                        </li>
-                        <li className="filter-sidebar-list__item courser">
-                          <span className="filter-sidebar-list__text">
-                            Groceries <span className="qty">3</span>
-                          </span>
-                        </li>
-                        <li className="filter-sidebar-list__item courser">
-                          <span className="filter-sidebar-list__text">
-                            Men's <span className="qty">5</span>
-                          </span>
-                        </li>
-                        <li className="filter-sidebar-list__item courser">
-                          <span className="filter-sidebar-list__text">
-                            Women's <span className="qty">9</span>
-                          </span>
-                        </li>
+                        {
+                          allCategory?.map((item, index) => (
+                            <li key={index} onClick={() => handleCategoryClick(item?._id)} className="filter-sidebar-list__item courser">
+                              <span className="filter-sidebar-list__text">
+                                {item?.category_name} <span className="qty">{item?.totalCount}</span>
+                              </span>
+                            </li>
+                          ))
+                        }
                       </ul>
                     </div>
                   </div>
@@ -211,26 +219,15 @@ const AllProduct = () => {
                     </button>
                     <div className="filter-sidebar__content">
                       <ul className="filter-sidebar-list">
-                        <li className="filter-sidebar-list__item courser">
-                          <span className="filter-sidebar-list__text">
-                            No Brand <span className="qty">10</span>
-                          </span>
-                        </li>
-                        <li className="filter-sidebar-list__item courser">
-                          <span className="filter-sidebar-list__text">
-                            Philips <span className="qty">3</span>
-                          </span>
-                        </li>
-                        <li className="filter-sidebar-list__item courser">
-                          <span className="filter-sidebar-list__text">
-                            Dell <span className="qty">8</span>
-                          </span>
-                        </li>
-                        <li className="filter-sidebar-list__item courser">
-                          <span className="filter-sidebar-list__text">
-                            Lg <span className="qty">5</span>
-                          </span>
-                        </li>
+                        {
+                          allBrand?.map((item, index) => (
+                            <li key={index} onClick={() => handleBrandClick(item?._id)} className="filter-sidebar-list__item courser">
+                              <span className="filter-sidebar-list__text">
+                                {item?.brand_name} <span className="qty">{item?.totalCount}</span>
+                              </span>
+                            </li>
+                          ))
+                        }
                       </ul>
                     </div>
                   </div>
@@ -317,13 +314,16 @@ const AllProduct = () => {
                   </div>
 
                   <nav aria-label="Page navigation example">
-                    {/* Paginate */}
-                    <Paginate
-                      handelPageClick={handelPageClick}
-                      page_no={Number(page_no)}
-                      per_page={Number(per_page)}
-                      totalCount={totalProducts || 0}
-                    />
+                    {
+                      allProducts?.length > 0 && (
+                        <Paginate
+                          handelPageClick={handelPageClick}
+                          page_no={Number(page_no)}
+                          per_page={Number(per_page)}
+                          totalCount={totalProducts || 0}
+                        />
+                      )
+                    }
                   </nav>
                 </div>
               </div>
