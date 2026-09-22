@@ -1,6 +1,44 @@
 import { FaRegStar, FaStar } from "react-icons/fa";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { useSearchParams, useNavigate } from "react-router-dom"
+import parse from "html-react-parser";
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+
+import { FreeMode, Navigation, Thumbs } from "swiper/modules"
+import { useEffect, useState } from "react";
+import productStore from "../store/productStore";
+import Skeleton from "react-loading-skeleton";
+import { baseURLFile } from "../helper/config";
+
 
 const ProductDetails = () => {
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  let [data, setData] = useState({
+    size: "",
+    color: "",
+    qty: 1,
+    activeColor: null,
+    activeSize: null
+  });
+
+  const product_id = searchParams.get("product_id");
+
+  // product Store
+  let { singleProduct, singleProductRequest } = productStore();
+
+  useEffect(() => {
+    (async () => await singleProductRequest(product_id))();
+  }, [singleProductRequest, product_id]);
+
+  console.log(singleProduct);
+
+
   const StarRating = ({ star }) => {
     star = parseInt(star);
     const totalStars = 5;
@@ -21,101 +59,146 @@ const ProductDetails = () => {
       <div className='container container-two'>
         <div className='row gy-4'>
           {/* Left Column - Product Images and Description */}
-          <div className='col-lg-6'>
-            <div className='tab-content' id='pills-tabContent'>
-              <div
-                className='tab-pane fade show active'
-                id='pills-product-details'
-                role='tabpanel'
-                aria-labelledby='pills-product-details-tab'
-                tabIndex={0}
-              >
-                {/* Product Details Content Start */}
-                <div className='product-details'>
-                  <div>
-                    {/* Main Product Image */}
-                    <div className='main-product-image mb-3'>
-                      <img
-                        src="https://placehold.co/600x400"
-                        alt="Product"
-                        style={{ width: '100%', borderRadius: '8px' }}
-                      />
-                    </div>
-
-                    {/* Thumbnail Images */}
-                    <div className='product-thumbnails d-flex gap-2'>
-                      <div style={{ width: '23%' }}>
-                        <img
-                          src="https://placehold.co/600x400"
-                          alt={`Thumbnail`}
-                          style={{ width: '100%', borderRadius: '4px', cursor: 'pointer' }}
-                        />
-                      </div>
-                      <div style={{ width: '23%' }}>
-                        <img
-                          src="https://placehold.co/600x400"
-                          alt={`Thumbnail`}
-                          style={{ width: '100%', borderRadius: '4px', cursor: 'pointer' }}
-                        />
+          {
+            singleProduct === null ? (
+              <>
+                {
+                  [...Array(6)].map(() => (
+                    <div className='col-lg-6'>
+                      <div className="Skeleton">
+                        <Skeleton count={8} />
                       </div>
                     </div>
-                  </div>
+                  ))
+                }
+              </>
+            ) : (
+              <>
+                <div className='col-lg-6'>
+                  <div className='tab-content' id='pills-tabContent'>
+                    <div
+                      className='tab-pane fade show active'
+                      id='pills-product-details'
+                      role='tabpanel'
+                      aria-labelledby='pills-product-details-tab'
+                      tabIndex={0}
+                    >
+                      {/* Product Details Content Start */}
+                      <div className='product-details'>
+                        <div>
+                          <Swiper
+                            style={{
+                              "--swiper-navigation-color": "#fff",
+                              "--swiper-pagination-color": "#fff",
+                            }}
+                            spaceBetween={10}
+                            navigation={true}
+                            thumbs={{ swiper: thumbsSwiper }}
+                            modules={[FreeMode, Navigation, Thumbs]}
+                            className="mySwiper2"
+                          >
+                            {
+                              singleProduct?.images?.map((img, index) => (
+                                <SwiperSlide>
+                                  <div key={index} className='main-product-image mb-3'>
+                                    <img
+                                      src={`${baseURLFile}/${img}`}
+                                      alt="Product"
+                                      style={{ width: '100%', borderRadius: '8px' }}
+                                    />
+                                  </div>
+                                </SwiperSlide>
+                              ))
+                            }
+                          </Swiper>
 
-                  <h5 className='product-details__desc mt-4'>
-                    Product Description
-                  </h5>
-                  <div className='product-details__item'>
-                    This is a premium quality cotton t-shirt perfect for everyday wear. Made from 100% organic cotton, it provides maximum comfort and breathability. Features include reinforced stitching, pre-shrunk fabric, and colorfast dyes.
-                  </div>
-                </div>
-                {/* Product Details Content End */}
-              </div>
-
-              {/* Reviews Tab */}
-              <div
-                className='tab-pane fade'
-                id='pills-rating'
-                role='tabpanel'
-                aria-labelledby='pills-rating-tab'
-                tabIndex={0}
-              >
-                <div className='product-review-wrapper'>
-                  <div className='product-review'>
-                    <div className='product-review__top flx-between'>
-                      <div className='product-review__rating flx-align'>
-                        <div className='d-flex align-items-center gap-1'>
-                          <div className='star'>
-                            <StarRating star={5} />
+                          {/* Thumbnail Images */}
+                          <div className='product-thumbnails d-flex gap-2'>
+                            <Swiper
+                              onSwiper={setThumbsSwiper}
+                              spaceBetween={10}
+                              slidesPerView={4}
+                              freeMode={true}
+                              watchSlidesProgress={true}
+                              modules={[FreeMode, Navigation, Thumbs]}
+                              className="mySwiper"
+                            >
+                              {
+                                singleProduct?.images?.map((img, index) => (
+                                  <SwiperSlide>
+                                    <div key={index}>
+                                      <img
+                                        src={`${baseURLFile}/${img}`}
+                                        alt={`Thumbnail`}
+                                        style={{ width: '100%', borderRadius: '4px', cursor: 'pointer' }}
+                                      />
+                                    </div>
+                                  </SwiperSlide>
+                                ))
+                              }
+                            </Swiper>
                           </div>
-                          <span className='star-rating__text text-body'>
-                            5.0
-                          </span>
                         </div>
-                        <span className='product-review__reason'>
-                          For{" "}
-                          <span className='product-review__subject'>
-                            Customer Support
-                          </span>
-                        </span>
+
+                        <h5 className='product-details__desc mt-4'>
+                          Product Description
+                        </h5>
+                        <div className='product-details__item'>
+                          {parse(singleProduct?.description || '')}
+                        </div>
                       </div>
-                      <div className='product-review__date'>
-                        by{" "}
-                        <strong className='product-review__user text--base'>
-                          John Doe
-                        </strong>{" "}
-                        (Dec 1, 2024)
-                      </div>
+                      {/* Product Details Content End */}
                     </div>
-                    <div className='product-review__body'>
-                      <p className='product-review__desc'>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec metus vel ante finibus facilisis. Nullam nec metus vel ante finibus facilisis.
-                      </p>
+
+                    {/* Reviews Tab */}
+                    <div
+                      className='tab-pane fade'
+                      id='pills-rating'
+                      role='tabpanel'
+                      aria-labelledby='pills-rating-tab'
+                      tabIndex={0}
+                    >
+                      <div className='product-review-wrapper'>
+                        <div className='product-review'>
+                          <div className='product-review__top flx-between'>
+                            <div className='product-review__rating flx-align'>
+                              <div className='d-flex align-items-center gap-1'>
+                                <div className='star'>
+                                  <StarRating star={5} />
+                                </div>
+                                <span className='star-rating__text text-body'>
+                                  5.0
+                                </span>
+                              </div>
+                              <span className='product-review__reason'>
+                                For{" "}
+                                <span className='product-review__subject'>
+                                  Customer Support
+                                </span>
+                              </span>
+                            </div>
+                            <div className='product-review__date'>
+                              by{" "}
+                              <strong className='product-review__user text--base'>
+                                John Doe
+                              </strong>{" "}
+                              (Dec 1, 2024)
+                            </div>
+                          </div>
+                          <div className='product-review__body'>
+                            <p className='product-review__desc'>
+                              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec metus vel ante finibus facilisis. Nullam nec metus vel ante finibus facilisis.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
+              </>
+            )
+          }
+
 
           {/* Right Column - Product Info and Purchase Options */}
           <div className='col-lg-6'>
