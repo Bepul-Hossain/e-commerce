@@ -12,6 +12,8 @@ import { useEffect, useState } from "react";
 import productStore from "../store/productStore";
 import Skeleton from "react-loading-skeleton";
 import { baseURLFile } from "../helper/config";
+import cartStore from "../store/cartStore";
+import { formatDate } from "../helper/helper";
 
 
 const ProductDetails = () => {
@@ -31,6 +33,8 @@ const ProductDetails = () => {
 
   // product Store
   let { singleProduct, singleProductRequest } = productStore();
+  // cart store
+  let { createCartLoading, createCartRequest, allCartRequest } = cartStore();
 
   useEffect(() => {
     (async () => await singleProductRequest(product_id))();
@@ -282,31 +286,54 @@ const ProductDetails = () => {
                       <div className='quantity py-3'>
                         <div className='w-100'>
                           <h5 className='text-danger'>
-                            Stock: 10
+                            Stock: {singleProduct?.stock}
                           </h5>
                           <div className='inner'>
                             <button
-                              className='btn-quantity btn-decrease'>
+                              className='btn-quantity btn-decrease'
+                              onClick={() => { setData({ ...data, qty: data.qty > 1 ? data.qty - 1 : 1 }) }}
+                            >
                               -
                             </button>
-                            <span className='quantity-product'>5</span>
+                            <span className='quantity-product'>{data?.qty}</span>
                             <button
                               className='btn-quantity btn-increase'
+                              onClick={() => setData({ ...data, qty: data.qty + 1 })}
                             >
                               +
                             </button>
                           </div>
                         </div>
                         <div className='w-100 pt-5'>
-                          <button
-                            className='btn btn-main d-flex w-100 justify-content-center align-items-center gap-2 pill px-sm-5'
-                          >
-                            <img
-                              src='assets/images/icons/add-to-cart.svg'
-                              alt=''
-                            />
-                            Add To Cart
-                          </button>
+                          {
+                            singleProduct?.stock === 0 ? (
+                              <>
+                                <button disabled={true}
+                                  className="btn not-allow btn-main d-flex w-100 justify-content-center align-items-center gap-2 pill px-sm-5"
+                                >
+                                  <img
+                                    src='assets/images/icons/add-to-cart.svg'
+                                    alt=''
+                                  />
+                                  Product Out of Stock
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button
+                                  disabled={createCartLoading}
+                                  className='btn btn-main d-flex w-100 justify-content-center align-items-center gap-2 pill px-sm-5'
+                                >
+                                  <img
+                                    src='assets/images/icons/add-to-cart.svg'
+                                    alt=''
+                                  />
+                                  {
+                                    createCartLoading ? "Loading..." : "Add To Cart"
+                                  }
+                                </button>
+                              </>)
+                          }
                         </div>
                       </div>
                     </div>
@@ -316,37 +343,41 @@ const ProductDetails = () => {
                       <li className='meta-attribute__item'>
                         <span className='name'>Last Update</span>
                         <span className='details'>
-                          Dec 1, 2024
+                          {formatDate(singleProduct?.updatedAt)}
                         </span>
                       </li>
                       <li className='meta-attribute__item'>
                         <span className='name'>Published</span>
                         <span className='details'>
-                          Jan 15, 2024
+                          {formatDate(singleProduct?.createdAt)}
                         </span>
                       </li>
                       <li className='meta-attribute__item'>
                         <span className='name'>Category</span>
                         <span className='details'>
-                          Clothing
+                          {singleProduct?.category?.[0]?.category_name}
                         </span>
                       </li>
                       <li className='meta-attribute__item'>
                         <span className='name'>Brand</span>
                         <span className='details'>
-                          Fashion Brand
+                          {singleProduct?.brand?.[0]?.brand_name}
                         </span>
                       </li>
                       <li className='meta-attribute__item'>
                         <span className='name'>Is Discount</span>
                         <span className='details'>
-                          True
+                          {singleProduct?.is_discount ? "True" : "False"}
                         </span>
                       </li>
-                      <li className='meta-attribute__item'>
-                        <span className='name'>Discount Percent</span>
-                        <span className='details'>20%</span>
-                      </li>
+                      {
+                        singleProduct?.is_discount === true && (
+                          <li className='meta-attribute__item'>
+                            <span className='name'>Discount Percent</span>
+                            <span className='details'>{discount.toFixed(0)}%</span>
+                          </li>
+                        )
+                      }
                     </ul>
                     {/* Meta Attribute List End */}
                   </div>
