@@ -38,7 +38,8 @@ const ProductDetails = () => {
 
   console.log(singleProduct);
 
-
+  const discount = ((singleProduct?.price - singleProduct?.discount_price) /
+    singleProduct?.price) * 100;
   const StarRating = ({ star }) => {
     star = parseInt(star);
     const totalStars = 5;
@@ -201,130 +202,158 @@ const ProductDetails = () => {
 
 
           {/* Right Column - Product Info and Purchase Options */}
-          <div className='col-lg-6'>
-            <div className='product-sidebar pt-0'>
-              <div className='product-sidebar__top position-relative flx-between gap-1'>
-                <div className='title_box'>
-                  <h3 className='product-sidebar__title'>
-                    Premium Cotton T-Shirt
-                  </h3>
-                </div>
-
-                <div className='price py-3'>
-                  <h4>
-                    ৳1200
-                    <del>৳1500 </del>{" "}
-                    <span className='discount_percent'>
-                      - 20% Off
-                    </span>
-                  </h4>
-                  <p>High quality cotton t-shirt with modern design and comfortable fit</p>
-                </div>
-
-                <div className='size py-3'>
-                  <h5>Size: M</h5>
-                  <div className='size_varient'>
-                    <button>
-                      M
-                    </button>
-                    <button>
-                      L
-                    </button>
-                    <button>
-                      XL
-                    </button>
-
-                  </div>
-                </div>
-
-                <div className='color py-3'>
-                  <h5>Color: Red</h5>
-                  <div className='size_varient'>
-                    <button>
-                      Red
-                    </button>
-                    <button>
-                      Blue
-                    </button>
-                    <button>
-                      Green
-                    </button>
-
-                  </div>
-                </div>
-
-                <div className='quantity py-3'>
-                  <div className='w-100'>
-                    <h5 className='text-danger'>
-                      Stock: 10
-                    </h5>
-                    <div className='inner'>
-                      <button
-                        className='btn-quantity btn-decrease'>
-                        -
-                      </button>
-                      <span className='quantity-product'>5</span>
-                      <button
-                        className='btn-quantity btn-increase'
-                      >
-                        +
-                      </button>
+          {
+            singleProduct === null ? (
+              <>
+                {
+                  [...Array(6)].map(() => (
+                    <div className='col-lg-6'>
+                      <div className="Skeleton">
+                        <Skeleton count={8} />
+                      </div>
                     </div>
-                  </div>
-                  <div className='w-100 pt-5'>
-                    <button
-                      className='btn btn-main d-flex w-100 justify-content-center align-items-center gap-2 pill px-sm-5'
-                    >
-                      <img
-                        src='assets/images/icons/add-to-cart.svg'
-                        alt=''
-                      />
-                      Add To Cart
-                    </button>
+                  ))
+                }
+              </>
+            ) : (
+              <>
+                <div className='col-lg-6'>
+                  <div className='product-sidebar pt-0'>
+                    <div className='product-sidebar__top position-relative flx-between gap-1'>
+                      <div className='title_box'>
+                        <h3 className='product-sidebar__title'>
+                          {singleProduct?.title}
+                        </h3>
+                      </div>
+
+                      <div className='price py-3'>
+                        <h4>
+                          {singleProduct?.is_discount === false ?
+                            `৳${singleProduct?.price}` : `৳${singleProduct.discount_price}`} {""}
+                          <del>{singleProduct?.is_discount === false
+                            ? "" : `৳${singleProduct?.price}`} </del>{" "}
+
+                          {
+                            singleProduct?.is_discount === true && (
+                              <>
+                                <span className='discount_percent'>
+                                  - {discount.toFixed(0)}% Off
+                                </span>
+                              </>
+                            )
+                          }
+
+                        </h4>
+                        <p>{singleProduct?.short_description}</p>
+                      </div>
+
+                      <div className='size py-3'>
+                        <h5>Size: {data?.size}</h5>
+                        <div className='size_varient'>
+                          {
+                            singleProduct?.size?.map((item, index) => (
+                              <button className={data?.activeSize === index ? 'active' : ''}
+                                key={index}
+                                onClick={() => setData({ ...data, size: item, activeSize: index })}
+                              >
+                                {item}
+                              </button>
+                            ))
+                          }
+
+
+                        </div>
+                      </div>
+
+                      <div className='color py-3'>
+                        <h5>Color: {data?.color}</h5>
+                        <div className='size_varient'>
+                          {singleProduct?.color?.map((item, index) => (
+                            <button
+                              className={data?.activeColor === index ? 'active' : ''}
+                              key={index}
+                              onClick={() => setData({ ...data, color: item, activeColor: index })}>
+                              {item}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className='quantity py-3'>
+                        <div className='w-100'>
+                          <h5 className='text-danger'>
+                            Stock: 10
+                          </h5>
+                          <div className='inner'>
+                            <button
+                              className='btn-quantity btn-decrease'>
+                              -
+                            </button>
+                            <span className='quantity-product'>5</span>
+                            <button
+                              className='btn-quantity btn-increase'
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                        <div className='w-100 pt-5'>
+                          <button
+                            className='btn btn-main d-flex w-100 justify-content-center align-items-center gap-2 pill px-sm-5'
+                          >
+                            <img
+                              src='assets/images/icons/add-to-cart.svg'
+                              alt=''
+                            />
+                            Add To Cart
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Meta Attribute List Start */}
+                    <ul className='meta-attribute'>
+                      <li className='meta-attribute__item'>
+                        <span className='name'>Last Update</span>
+                        <span className='details'>
+                          Dec 1, 2024
+                        </span>
+                      </li>
+                      <li className='meta-attribute__item'>
+                        <span className='name'>Published</span>
+                        <span className='details'>
+                          Jan 15, 2024
+                        </span>
+                      </li>
+                      <li className='meta-attribute__item'>
+                        <span className='name'>Category</span>
+                        <span className='details'>
+                          Clothing
+                        </span>
+                      </li>
+                      <li className='meta-attribute__item'>
+                        <span className='name'>Brand</span>
+                        <span className='details'>
+                          Fashion Brand
+                        </span>
+                      </li>
+                      <li className='meta-attribute__item'>
+                        <span className='name'>Is Discount</span>
+                        <span className='details'>
+                          True
+                        </span>
+                      </li>
+                      <li className='meta-attribute__item'>
+                        <span className='name'>Discount Percent</span>
+                        <span className='details'>20%</span>
+                      </li>
+                    </ul>
+                    {/* Meta Attribute List End */}
                   </div>
                 </div>
-              </div>
-
-              {/* Meta Attribute List Start */}
-              <ul className='meta-attribute'>
-                <li className='meta-attribute__item'>
-                  <span className='name'>Last Update</span>
-                  <span className='details'>
-                    Dec 1, 2024
-                  </span>
-                </li>
-                <li className='meta-attribute__item'>
-                  <span className='name'>Published</span>
-                  <span className='details'>
-                    Jan 15, 2024
-                  </span>
-                </li>
-                <li className='meta-attribute__item'>
-                  <span className='name'>Category</span>
-                  <span className='details'>
-                    Clothing
-                  </span>
-                </li>
-                <li className='meta-attribute__item'>
-                  <span className='name'>Brand</span>
-                  <span className='details'>
-                    Fashion Brand
-                  </span>
-                </li>
-                <li className='meta-attribute__item'>
-                  <span className='name'>Is Discount</span>
-                  <span className='details'>
-                    True
-                  </span>
-                </li>
-                <li className='meta-attribute__item'>
-                  <span className='name'>Discount Percent</span>
-                  <span className='details'>20%</span>
-                </li>
-              </ul>
-              {/* Meta Attribute List End */}
-            </div>
-          </div>
+              </>
+            )
+          }
         </div>
       </div>
     </div>
