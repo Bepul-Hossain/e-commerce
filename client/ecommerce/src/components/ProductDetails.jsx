@@ -14,6 +14,7 @@ import Skeleton from "react-loading-skeleton";
 import { baseURLFile } from "../helper/config";
 import cartStore from "../store/cartStore";
 import { ErrorToast, formatDate, IsEmpty } from "../helper/helper";
+import reviewStore from "../store/reviewStore";
 
 const ProductDetails = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
@@ -72,6 +73,14 @@ const ProductDetails = () => {
     }
     await allCartRequest();
   }
+
+  //Review Store
+  let { allReviewByProductRequest, allReviewByProduct } = reviewStore();
+
+  useEffect(() => {
+    (async () => await allReviewByProductRequest(product_id))();
+  }, [allReviewByProductRequest, product_id]);
+
   const StarRating = ({ star }) => {
     star = parseInt(star);
     const totalStars = 5;
@@ -192,38 +201,42 @@ const ProductDetails = () => {
                       tabIndex={0}
                     >
                       <div className='product-review-wrapper'>
-                        <div className='product-review'>
-                          <div className='product-review__top flx-between'>
-                            <div className='product-review__rating flx-align'>
-                              <div className='d-flex align-items-center gap-1'>
-                                <div className='star'>
-                                  <StarRating star={5} />
+                        {
+                          allReviewByProduct?.map((item, index) =>
+                            <div key={index} className='product-review'>
+                              <div className='product-review__top flx-between'>
+                                <div className='product-review__rating flx-align'>
+                                  <div className='d-flex align-items-center gap-1'>
+                                    <div className='star'>
+                                      <StarRating star={item?.rating} />
+                                    </div>
+                                    <span className='star-rating__text text-body'>
+                                      {item?.rating}
+                                    </span>
+                                  </div>
+                                  <span className='product-review__reason'>
+                                    For{" "}
+                                    <span className='product-review__subject'>
+                                      Customer Support
+                                    </span>
+                                  </span>
                                 </div>
-                                <span className='star-rating__text text-body'>
-                                  5.0
-                                </span>
+                                <div className='product-review__date'>
+                                  by{" "}
+                                  <strong className='product-review__user text--base'>
+                                    {item?.user?.cus_name}
+                                  </strong>{" "}
+                                  ({formatDate(item?.createdAt)})
+                                </div>
                               </div>
-                              <span className='product-review__reason'>
-                                For{" "}
-                                <span className='product-review__subject'>
-                                  Customer Support
-                                </span>
-                              </span>
+                              <div className='product-review__body'>
+                                <p className='product-review__desc'>
+                                  {item?.des}
+                                </p>
+                              </div>
                             </div>
-                            <div className='product-review__date'>
-                              by{" "}
-                              <strong className='product-review__user text--base'>
-                                John Doe
-                              </strong>{" "}
-                              (Dec 1, 2024)
-                            </div>
-                          </div>
-                          <div className='product-review__body'>
-                            <p className='product-review__desc'>
-                              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec metus vel ante finibus facilisis. Nullam nec metus vel ante finibus facilisis.
-                            </p>
-                          </div>
-                        </div>
+                          )
+                        }
                       </div>
                     </div>
                   </div>
