@@ -13,8 +13,7 @@ import productStore from "../store/productStore";
 import Skeleton from "react-loading-skeleton";
 import { baseURLFile } from "../helper/config";
 import cartStore from "../store/cartStore";
-import { formatDate } from "../helper/helper";
-
+import { ErrorToast, formatDate, IsEmpty } from "../helper/helper";
 
 const ProductDetails = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
@@ -33,17 +32,46 @@ const ProductDetails = () => {
 
   // product Store
   let { singleProduct, singleProductRequest } = productStore();
-  // cart store
-  let { createCartLoading, createCartRequest, allCartRequest } = cartStore();
 
   useEffect(() => {
     (async () => await singleProductRequest(product_id))();
   }, [singleProductRequest, product_id]);
 
-  console.log(singleProduct);
-
   const discount = ((singleProduct?.price - singleProduct?.discount_price) /
     singleProduct?.price) * 100;
+
+  // cart store
+  let { createCartLoading, createCartRequest, allCartRequest } = cartStore();
+
+  // Validation rules
+  const validations = [
+    { field: product_id, message: "product_id is required" },
+    { field: singleProduct?.title, message: "title is required" },
+    { field: data.color, message: "color is required" },
+    { field: data.qty, message: "qty is required" },
+    { field: data.size, message: "size is required" },
+  ];
+
+  const cartSubmit = async () => {
+    for (const { field, message } of validations) {
+      if (IsEmpty(field)) {
+        return ErrorToast(message);
+      }
+    }
+    let submitData = {
+      product_id,
+      product_name: singleProduct?.title,
+      color: data.color,
+      qty: data.qty,
+      size: data.size,
+    };
+    let res = await createCartRequest(submitData);
+    await singleProductRequest(product_id);
+    if (res === 401) {
+      navigate("/login");
+    }
+    await allCartRequest();
+  }
   const StarRating = ({ star }) => {
     star = parseInt(star);
     const totalStars = 5;
@@ -322,6 +350,7 @@ const ProductDetails = () => {
                               <>
                                 <button
                                   disabled={createCartLoading}
+                                  onClick={cartSubmit}
                                   className='btn btn-main d-flex w-100 justify-content-center align-items-center gap-2 pill px-sm-5'
                                 >
                                   <img

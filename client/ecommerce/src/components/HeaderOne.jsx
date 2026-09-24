@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { FaHouse} from "react-icons/fa6";
 import { Link, NavLink } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
+import cartStore from "../store/cartStore";
+import userStore from "../store/userStore";
 
 const HeaderOne = () => {
   const [active, setActive] = useState(false);
@@ -46,6 +49,17 @@ const HeaderOne = () => {
   const mobileMenu = () => {
     setActive(!active);
   };
+
+  // api integration
+  let { allCart, allCartRequest } = cartStore();
+  let { user, userRequest } = userStore();
+
+  useEffect(() => {
+    (async () => {
+      await allCartRequest();
+      await userRequest();
+    })()
+  }, [allCartRequest, userRequest]);
 
   return (
     <>
@@ -106,19 +120,33 @@ const HeaderOne = () => {
                   alt=""
                   className="dark-version"
                 />
-                <span className="qty-badge font-12">{0}</span>
+                <span className="qty-badge font-12">{allCart?.length || 0}</span>
               </Link>
               {/* Light Dark Mode */}
               <ThemeToggle />
               {/* Light Dark Mode */}
-              <div className="header-right__inner gap-3 flx-align d-lg-flex d-none">
-                <Link to="/register" className="btn btn-main pill">
-                  <span className="icon-left icon">
-                    <img src="assets/images/icons/user.svg" alt="" />
-                  </span>
-                  Create Account
-                </Link>
-              </div>
+              {
+                user !== null ? (
+                  <>
+                    <Link to='/dashboard-profile' className="btn btn-main pill">
+                      <span className="icon-left icon">
+                        <FaHouse className="mb-1"/>
+                      </span>
+                      Dashboard
+                    </Link>
+                  </>
+                ) : (
+                  <><div className="header-right__inner gap-3 flx-align d-lg-flex d-none">
+                    <Link to="/register" className="btn btn-main pill">
+                      <span className="icon-left icon">
+                        <img src="assets/images/icons/user.svg" alt="" />
+                      </span>
+                      Create Account
+                    </Link>
+                  </div></>
+                )
+              }
+
               <button
                 type="button"
                 className="toggle-mobileMenu d-lg-none"

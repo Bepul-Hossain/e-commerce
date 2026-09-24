@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import productStore from "../store/productStore";
 
 const BreadcrumbProductDetails = () => {
+  let {singleProduct} = productStore();
   return (
     <section className="breadcrumb border-bottom p-0 d-block section-bg position-relative z-index-1">
       <div className="breadcrumb-two">
@@ -36,7 +38,7 @@ const BreadcrumbProductDetails = () => {
 
                 <div className="mt-2">
                   <h3 className="breadcrumb-two-content__title mb-3 text-capitalize">
-                    Baby Toy
+                    {singleProduct?.title || "No title"}
                   </h3>
                 </div>
 
