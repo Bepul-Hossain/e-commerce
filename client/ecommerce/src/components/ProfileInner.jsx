@@ -1,4 +1,89 @@
+import { useEffect, useState } from "react";
+import userStore from "../store/userStore";
+import { ErrorToast, formatDate, IsEmpty } from "../helper/helper";
+
 const ProfileInner = () => {
+
+  let { user, userRequest, userUpdateLoading, userUpdateRequest } = userStore();
+
+  let [data, setData] = useState({
+    cus_name: "",
+    password: "",
+    cus_add: "",
+    cus_city: "",
+    cus_country: "",
+    cus_fax: "",
+    cus_phone: "",
+    cus_postcode: "",
+    cus_state: "",
+    ship_add: "",
+    ship_city: "",
+    ship_country: "",
+    ship_name: "",
+    ship_phone: "",
+    ship_postcode: "",
+    ship_state: "",
+  });
+
+
+  useEffect(() => {
+    if (user) {
+      setData({
+        cus_add: user?.cus_add || "",
+        password: user?.password || "",
+        cus_city: user?.cus_city || "",
+        cus_country: user?.cus_country || "",
+        cus_fax: user?.cus_fax || "",
+        cus_name: user?.cus_name || "",
+        cus_phone: user?.cus_phone || "",
+        cus_postcode: user?.cus_postcode || "",
+        cus_state: user?.cus_state || "",
+        ship_add: user?.ship_add || "",
+        ship_city: user?.ship_city || "",
+        ship_country: user?.ship_country || "",
+        ship_name: user?.ship_name || "",
+        ship_phone: user?.ship_phone || "",
+        ship_postcode: user?.ship_postcode || "",
+        ship_state: user?.ship_state || "",
+      })
+    }
+  }, [user])
+
+
+  //Validation rules
+  const validations = [
+    { field: data.cus_name, message: "Customer name is required." },
+    { field: data.password, message: "Password is required." },
+    { field: data.cus_add, message: "Customer address is required." },
+    { field: data.cus_city, message: "Customer city is required." },
+    { field: data.cus_country, message: "Customer country is required." },
+    { field: data.cus_phone, message: "Customer phone is required." },
+    { field: data.cus_postcode, message: "Customer postcode is required." },
+    { field: data.cus_state, message: "Customer state is required." },
+    { field: data.ship_add, message: "Shipping address is required." },
+    { field: data.ship_city, message: "Shipping city is required." },
+    { field: data.ship_country, message: "Shipping country is required." },
+    { field: data.ship_name, message: "Shipping name is required." },
+    { field: data.ship_phone, message: "Shipping phone is required." },
+    { field: data.ship_postcode, message: "Shipping postcode is required." },
+    { field: data.ship_state, message: "Shipping state is required." },
+  ];
+
+  const handleChange = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  }
+
+  let userSubmit = async () => {
+    for (const { field, message } of validations) {
+      if (IsEmpty(field)) {
+        return ErrorToast(message);
+      }
+    }
+    await userUpdateRequest(data);
+    await userRequest()
+  }
+
+
   return (
     <>
       {/* Cover Photo Start */}
@@ -17,7 +102,7 @@ const ProfileInner = () => {
             <div className="col-xxl-3 col-xl-4">
               <div className="profile-info">
                 <div className="profile-info__inner mb-40 text-center">
-                  <h5 className="profile-info__name mb-1">Alex Jeo</h5>
+                  <h5 className="profile-info__name mb-1">{user?.cus_name}</h5>
                   <span className="profile-info__designation font-14">
                     Exclusive Author
                   </span>
@@ -33,7 +118,7 @@ const ProfileInner = () => {
                       <span className="text text-heading fw-500">Email</span>
                     </span>
                     <span className="profile-info-list__info">
-                      AlexJeo@mail.com
+                      {user?.email}
                     </span>
                   </li>
                   <li className="profile-info-list__item">
@@ -46,7 +131,7 @@ const ProfileInner = () => {
                       <span className="text text-heading fw-500">Phone</span>
                     </span>
                     <span className="profile-info-list__info">
-                      123-456-7890
+                      {user?.cus_phone}
                     </span>
                   </li>
                   <li className="profile-info-list__item">
@@ -58,7 +143,7 @@ const ProfileInner = () => {
                       />
                       <span className="text text-heading fw-500">Country</span>
                     </span>
-                    <span className="profile-info-list__info"> USA</span>
+                    <span className="profile-info-list__info"> {user?.cus_country}</span>
                   </li>
 
                   <li className="profile-info-list__item">
@@ -73,7 +158,7 @@ const ProfileInner = () => {
                       </span>
                     </span>
                     <span className="profile-info-list__info">
-                      January 1, 2020
+                      {formatDate(user?.createdAt)}
                     </span>
                   </li>
                 </ul>
@@ -91,8 +176,9 @@ const ProfileInner = () => {
                               Customer Name
                             </label>
                             <input
+                              onChange={handleChange}
+                              value={data?.cus_name}
                               required
-                              value="Alex Jeo"
                               name="cus_name"
                               type="text"
                               className="common-input border"
@@ -109,7 +195,8 @@ const ProfileInner = () => {
                             </label>
                             <div className="position-relative">
                               <input
-                                value="password123"
+                                onChange={handleChange}
+                                value={data?.password}
                                 name="password"
                                 type="password"
                                 className="common-input common-input--withIcon common-input--withLeftIcon "
@@ -127,8 +214,9 @@ const ProfileInner = () => {
                               Customer address
                             </label>
                             <input
+                              onChange={handleChange}
                               required
-                              value="123 Main St"
+                              value={data?.cus_add}
                               name="cus_add"
                               type="text"
                               className="common-input border"
@@ -140,8 +228,9 @@ const ProfileInner = () => {
                               Customer city
                             </label>
                             <input
+                              onChange={handleChange}
                               required
-                              value="New York"
+                              value={data?.cus_city}
                               name="cus_city"
                               type="text"
                               className="common-input border"
@@ -153,8 +242,9 @@ const ProfileInner = () => {
                               Customer country
                             </label>
                             <input
+                              onChange={handleChange}
                               required
-                              value="USA"
+                              value={data?.cus_country}
                               name="cus_country"
                               type="text"
                               className="common-input border"
@@ -167,7 +257,8 @@ const ProfileInner = () => {
                             </label>
                             <input
                               required
-                              value="123-456-7890"
+                              onChange={handleChange}
+                              value={data?.cus_fax}
                               name="cus_fax"
                               type="text"
                               className="common-input border"
@@ -180,7 +271,8 @@ const ProfileInner = () => {
                             </label>
                             <input
                               required
-                              value="123-456-7890"
+                              onChange={handleChange}
+                              value={data?.cus_phone}
                               name="cus_phone"
                               type="text"
                               className="common-input border"
@@ -193,7 +285,8 @@ const ProfileInner = () => {
                             </label>
                             <input
                               required
-                              value="10001"
+                              onChange={handleChange}
+                              value={data?.cus_postcode}
                               name="cus_postcode"
                               type="text"
                               className="common-input border"
@@ -206,7 +299,8 @@ const ProfileInner = () => {
                             </label>
                             <input
                               required
-                              value="NY"
+                              onChange={handleChange}
+                              value={data?.cus_state}
                               name="cus_state"
                               type="text"
                               className="common-input border"
@@ -227,7 +321,8 @@ const ProfileInner = () => {
                             </label>
                             <input
                               required
-                              value="Alex Jeo"
+                              onChange={handleChange}
+                              value={data?.ship_name}
                               name="ship_name"
                               type="text"
                               className="common-input border"
@@ -240,7 +335,8 @@ const ProfileInner = () => {
                             </label>
                             <input
                               required
-                              value="123 Main St"
+                              onChange={handleChange}
+                              value={data?.ship_add}
                               name="ship_add"
                               type="text"
                               className="common-input border"
@@ -253,7 +349,8 @@ const ProfileInner = () => {
                             </label>
                             <input
                               required
-                              value="New York"
+                              onChange={handleChange}
+                              value={data?.ship_city}
                               name="ship_city"
                               type="text"
                               className="common-input border"
@@ -266,7 +363,8 @@ const ProfileInner = () => {
                             </label>
                             <input
                               required
-                              value="USA"
+                              onChange={handleChange}
+                              value={data?.ship_country}
                               name="ship_country"
                               type="text"
                               className="common-input border"
@@ -279,7 +377,8 @@ const ProfileInner = () => {
                             </label>
                             <input
                               required
-                              value="123-456-7890"
+                              onChange={handleChange}
+                              value={data?.ship_phone}
                               name="ship_phone"
                               type="text"
                               className="common-input border"
@@ -292,7 +391,8 @@ const ProfileInner = () => {
                             </label>
                             <input
                               required
-                              value="10001"
+                              onChange={handleChange}
+                              value={data?.ship_postcode}
                               name="ship_postcode"
                               type="text"
                               className="common-input border"
@@ -305,7 +405,8 @@ const ProfileInner = () => {
                             </label>
                             <input
                               required
-                              value="NY"
+                              onChange={handleChange}
+                              value={data?.ship_state}
                               name="ship_state"
                               type="text"
                               className="common-input border"
@@ -314,8 +415,11 @@ const ProfileInner = () => {
                           </div>
 
                           <div className="col-sm-12 text-end">
-                            <button className="btn btn-main btn-lg pill mt-4">
-                              Update Profile
+                            <button
+                              disabled={userUpdateLoading}
+                              onClick={userSubmit}
+                              className="btn btn-main btn-lg pill mt-4">
+                              {userUpdateLoading ? "Updating..." : "Update Profile"}
                             </button>
                           </div>
                         </div>
