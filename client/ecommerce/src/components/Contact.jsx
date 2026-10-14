@@ -14,10 +14,10 @@ const Contact = () => {
 
     emailjs
       .sendForm(
-        "service_ljx76ce", // replace with your EmailJS service ID
-        "template_71bgc2q", // replace with your EmailJS template ID
+        "service_lvmni6l", // replace with your EmailJS service ID
+        "template_ogx5dlp", // replace with your EmailJS template ID
         formRef.current,
-        "O86rX38MqMjDTy9Xv" // replace with your EmailJS public key
+        "OjEwj_2CSqmCuINzf" // replace with your EmailJS public key
       )
       .then(
         (result) => {
@@ -227,3 +227,45 @@ const Contact = () => {
 };
 
 export default Contact;
+
+
+// // Correct EmailJS template
+
+// <div style="font-family: system-ui, sans-serif, Arial; font-size: 12px">
+//   <div>
+//     A message by {{from_name}} ({{from_email}})
+//     has been received. Kindly respond at your earliest convenience.
+//   </div>
+
+//   <div style="margin-top: 20px; padding: 15px 0; border-width: 1px 0; border-style: dashed; border-color: lightgrey;">
+//     <table role="presentation">
+//       <tr>
+//         <td style="vertical-align: top">
+//           <div style="padding: 6px 10px; margin: 0 10px; background-color: aliceblue; border-radius: 5px; font-size: 26px;">
+//             👤
+//           </div>
+//         </td>
+
+//         <td style="vertical-align: top">
+//           <div style="color: #2c3e50; font-size: 16px">
+//             <strong>Name: {{from_name}}</strong>
+//           </div>
+
+//           <div style="color: #2c3e50; font-size: 13px">
+//             Email: {{from_email}}
+//           </div>
+
+//           <div style="color: #999999; font-size: 13px">
+//             Subject: {{from_subject}}
+//           </div>
+
+//           <div style="color: #999999; font-size: 13px">
+//             {{time}}
+//           </div>
+
+//           <p style="font-size: 16px">{{message}}</p>
+//         </td>
+//       </tr>
+//     </table>
+//   </div>
+// </div>
