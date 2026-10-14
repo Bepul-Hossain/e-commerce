@@ -24,7 +24,7 @@ const cartStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            if(error?.status === 401){
+            if (error?.status === 401) {
                 return 401
             }
             set({ createCartLoading: false })
@@ -33,7 +33,7 @@ const cartStore = create((set) => ({
     },
     // update cart
     updateCartLoading: false,
-    updateCartRequest: async (cart_id,data) => {
+    updateCartRequest: async (cart_id, data) => {
         try {
             set({ updateCartLoading: true })
             let res = await axios.put(baseURL + "/update-cart/" + cart_id, data, {
@@ -51,7 +51,7 @@ const cartStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            if(error?.status === 401){
+            if (error?.status === 401) {
                 return 401
             }
             set({ updateCartLoading: false })
