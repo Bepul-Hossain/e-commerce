@@ -255,11 +255,13 @@ exports.readAllInvoiceSingleUser = async (req, res) => {
 // Read single invoice single user
 exports.readSignleInvoiceSingleUser = async (req, res) => {
     try {
+        let user_id = new ObjectId(req.headers._id);
         let invoice_id = new ObjectId(req.params.invoice_id);
 
         let matchStage = {
             $match: {
                 _id: invoice_id,
+                user_id,
             }
         }
 

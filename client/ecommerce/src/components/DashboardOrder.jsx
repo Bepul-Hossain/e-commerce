@@ -1,9 +1,32 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ToWords } from "to-words";
 import Paginate from "../helper/Paginate";
+import invoiceStore from "../store/invoiceStore";
+import { formatDate } from "../helper/helper";
 
 const DashboardOrder = () => {
+
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const per_page = 6;
+  const page_no = searchParams.get("page_no") || 1;
+
+  let {
+    readAllInvoiceSingleUser,
+    allInvoiceSingleUserRequest,
+    readSingleInvoiceSingleUser,
+    singleInvoiceSingleUserRequest,
+    totalInvoiceSignleUser,
+  } = invoiceStore();
+
+  useEffect(() => {
+    (async () => {
+      await allInvoiceSingleUserRequest(per_page, page_no);
+    })()
+  }, [allInvoiceSingleUserRequest, page_no]);
+
   const componentRef = useRef(null);
 
   const handleAfterPrint = useCallback(() => {
@@ -14,6 +37,18 @@ const DashboardOrder = () => {
     console.log("`onBeforePrint` called");
     return Promise.resolve();
   }, []);
+
+
+  let viewOrder = (id) => {
+    singleInvoiceSingleUserRequest(id);
+  }
+
+  // pagination function
+  const handlePageclick = async (event) => {
+    let page_no = event.selected;
+    await allInvoiceSingleUserRequest(per_page, page_no + 1);
+    navigate(`/dashboard-all-orders?page_no=${page_no + 1}`);
+  }
 
   const printFn = useReactToPrint({
     contentRef: componentRef,
@@ -85,41 +120,66 @@ const DashboardOrder = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>Dec 1, 2020</td>
-                      <td>435effgd555555fgdfgdg453</td>
-                      <td>
-                        <span>1</span>
-                      </td>
-                      <td>
-                        <span className={`badge rounded-pill bg-success`}>
-                          delivered
-                        </span>
-                      </td>
-                      <td>
-                        <span className={`badge rounded-pill bg-success`}>
-                          success
-                        </span>{" "}
-                      </td>
-                      <td>
-                        <p> 1000</p>
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-success"
-                          data-bs-toggle="modal"
-                          data-bs-target={`#exampleModal_1`}
-                        >
-                          View order
-                        </button>
-                      </td>
-                    </tr>
+                    {
+                      readAllInvoiceSingleUser?.length < 1 && (
+                        <p>No data found!</p>
+                      )
+                    }
+                    {
+                      readAllInvoiceSingleUser?.map((item, index) =>
+                        <tr key={index}>
+                          <td>{formatDate(item?.createdAt)}</td>
+                          <td>{item?.tran_id}</td>
+                          <td>
+                            <span>{item?._id}</span>
+                          </td>
+                          <td>
+                            <span className={`badge rounded-pill ${item?.delivery_status === "delivered"
+                              ? "bg-success"
+                              : item?.delivery_status === "pending"
+                                ? "bg-warning"
+                                : "bg-danger"
+                              }`}>
+                              {item?.delivery_status}
+                            </span>
+                          </td>
+                          <td>
+                            <span className={`badge rounded-pill bg-success ${item?.payment_status === "success"
+                              ? "bg-success"
+                              : item?.payment_status === "pending"
+                                ? "bg-warning"
+                                : "bg-danger"
+                              }`}>
+                              {item?.payment_status}
+                            </span>{" "}
+                          </td>
+                          <td>
+                            <p> {item?.payable}</p>
+                          </td>
+                          <td>
+                            <button
+                              onClick={() => viewOrder(item?._id)}
+                              className="btn btn-success"
+                              data-bs-toggle="modal"
+                              data-bs-target={`#exampleModal_1`}
+                            >
+                              View order
+                            </button>
+                          </td>
+                        </tr>
+                      )
+                    }
                   </tbody>
                 </table>
               </div>
               <div className="flx-between justify-content-end gap-2">
                 <nav aria-label="Page navigation example">
-                  <Paginate page_no={1} per_page={5} totalCount={20} />
+                  <Paginate
+                    handelPageClick={handlePageclick}
+                    page_no={page_no}
+                    per_page={per_page}
+                    totalCount={totalInvoiceSignleUser}
+                  />
                 </nav>
               </div>
             </div>
