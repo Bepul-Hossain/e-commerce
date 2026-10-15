@@ -214,16 +214,16 @@ const DashboardOrder = () => {
                 <div className="profile">
                   <div className="row gy-4">
                     <div className="col-12">
-                      <div className="container my-5">
+                      <div className="container my-5" ref={componentRef}>
                         {/* Invoice Content */}
                         <div className="p-5 bg-white">
                           {/* Header */}
                           <div className="row mb-4 border-bottom pb-3">
                             <div className="col-sm-6">
                               <h2 className="fw-bold">INVOICE</h2>
-                              <p className="mb-0">#INV no: 1</p>
+                              <p className="mb-0">#INV no: {readSingleInvoiceSingleUser?._id}</p>
                               <p className="mb-0">
-                                #TRA no: 435effgd555555fgdfgdg453
+                                #TRA no: {readSingleInvoiceSingleUser?.tran_id}
                               </p>
                               <small>Date: Dec 1, 2020</small>
                             </div>
@@ -239,34 +239,44 @@ const DashboardOrder = () => {
                           <div className="row mb-4">
                             <div className="col-sm-6">
                               <h6 className="fw-bold">Bill To:</h6>
-                              <p className="mb-0">Alex Johnson</p>
+                              <p className="mb-0">{readSingleInvoiceSingleUser?.cus_details?.[0]?.Name}</p>
 
-                              <p className="mb-0">alex@email.com</p>
-                              <p className="mb-0">+880 1234 567 890</p>
-                              <p className="mb-0">123 Street, Chittagong</p>
+                              <p className="mb-0">{readSingleInvoiceSingleUser?.cus_details?.[0]?.Email}</p>
+                              <p className="mb-0">{readSingleInvoiceSingleUser?.cus_details?.[0]?.Phone}</p>
+                              <p className="mb-0">{readSingleInvoiceSingleUser?.cus_details?.[0]?.Address}</p>
                             </div>
                             <div className="col-sm-6 text-end">
                               <h6 className="fw-bold">Payment information: </h6>
                               <p className="mb-1">
                                 Payment Status:{" "}
                                 <span
-                                  className={`fw-bold text-uppercase text-success`}
+                                  className={`fw-bold text-uppercase ${readSingleInvoiceSingleUser?.payment_status === "success"
+                                    ? "text-success"
+                                    : readSingleInvoiceSingleUser?.payment_status === "pending"
+                                      ? "text-warning"
+                                      : "text-danger"
+                                    }`}
                                 >
-                                  success
+                                  {readSingleInvoiceSingleUser?.payment_status}
                                 </span>
                               </p>
                               <p className="mb-1">
                                 Deliver Status:{" "}
                                 <span
-                                  className={`fw-bold text-uppercase text-warning`}
+                                  className={`fw-bold text-uppercase ${readSingleInvoiceSingleUser?.delivery_status === "delivered"
+                                    ? "text-success"
+                                    : readSingleInvoiceSingleUser?.delivery_status === "pending"
+                                      ? "text-warning"
+                                      : "text-danger"
+                                    }`}
                                 >
-                                  pending
+                                  {readSingleInvoiceSingleUser?.delivery_status}
                                 </span>
                               </p>
                               <p className="mb-0">
                                 Total payable:{" "}
                                 <span className="fw-bold text-uppercase">
-                                  1000 tk.
+                                  {readSingleInvoiceSingleUser?.payable} tk.
                                 </span>
                               </p>
                             </div>
@@ -286,15 +296,19 @@ const DashboardOrder = () => {
                                 </tr>
                               </thead>
                               <tbody className="text-dark">
-                                <tr>
-                                  <td className="text-start">Baby Toy</td>
-
-                                  <td>Red</td>
-                                  <td>M</td>
-                                  <td>2</td>
-                                  <td>500 Tk.</td>
-                                  <td className="text-end">1000 Tk.</td>
-                                </tr>
+                                {
+                                  readSingleInvoiceSingleUser?.invoicesproducts
+                                    ?.map((item, index) => (
+                                      <tr key={index}>
+                                        <td className="text-start">{item?.product_name}</td>
+                                        <td>{item?.color}</td>
+                                        <td>{item?.size}</td>
+                                        <td>{item?.qty}</td>
+                                        <td>{item?.price} Tk.</td>
+                                        <td className="text-end">{item?.qty * item?.price} Tk.</td>
+                                      </tr>
+                                    ))
+                                }
                               </tbody>
                             </table>
                           </div>
@@ -303,23 +317,23 @@ const DashboardOrder = () => {
                           <div className="row justify-content-end">
                             <div className="col-8">
                               <p className="text-danger small fst-italic">
-                                {toWords.convert(Number(1000))}
+                                {toWords.convert(Number(readSingleInvoiceSingleUser?.payable || 0))}
                               </p>
                             </div>
                             <div className="col-4">
                               <ul className="list-unstyled">
                                 <li className="d-flex justify-content-between mb-2">
-                                  <span>Subtotal:</span> <span>1000 Tk.</span>
+                                  <span>Subtotal:</span> <span>{readSingleInvoiceSingleUser?.total} Tk.</span>
                                 </li>
                                 <li className="d-flex justify-content-between mb-2">
-                                  <span>Vat (15%):</span> <span>150 Tk.</span>
+                                  <span>Vat (15%):</span> <span>{readSingleInvoiceSingleUser?.vat} Tk.</span>
                                 </li>
                                 <li className="d-flex justify-content-between mb-2">
                                   <span>Shipping cost:</span>{" "}
                                   <span>75 Tk.</span>
                                 </li>
                                 <li className="d-flex justify-content-between border-top pt-2 fw-bold">
-                                  <span>Total:</span> <span>1000 Tk.</span>
+                                  <span>Total:</span> <span>{readSingleInvoiceSingleUser?.payable} Tk.</span>
                                 </li>
                               </ul>
                             </div>
