@@ -1,11 +1,24 @@
 import { useState } from "react";
 import { FaRegUser } from "react-icons/fa6";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import ThemeToggle from "../components/ThemeToggle";
+import userStore from "../store/userStore";
 
 const MasterLayout = ({ children }) => {
+
+  const navigate = useNavigate();
+  let { userLogoutRequest } = userStore()
+
+  let logout = async () => {
+    let res = await userLogoutRequest();
+    if (res) {
+      navigate("/login");
+    }
+  };
+
   let [active, setActive] = useState(false);
   let [show, setShow] = useState(false);
+
 
   let dashboardControl = () => {
     setActive(!active);
@@ -13,6 +26,8 @@ const MasterLayout = ({ children }) => {
   let showProfileControl = () => {
     setShow(!show);
   };
+
+
 
   return (
     <>
@@ -202,6 +217,7 @@ const MasterLayout = ({ children }) => {
 
                         <li className="sidebar-list__item">
                           <button
+                            onClick={logout}
                             className="sidebar-list__link"
                           >
                             <span className="sidebar-list__icon">
