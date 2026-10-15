@@ -50,6 +50,25 @@ app.use("/api/v1", router)
 
 app.use("/api/v1/get-file", express.static("uploads"));
 
+// Add React Front-end static super admin
+app.use("/super-admin", express.static(path.join(__dirname, "client", "super-admin", "dist"), {
+    index: false,
+}));
+
+// Add React Front-end routing super admin
+app.get("/super-admin/{*splat}", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "super-admin", "dist", "index.html"));
+});
+
+// Add React Front-end static ecommerce
+app.use(express.static(path.join(__dirname, "client", "ecommerce", "dist")));
+
+// Add React Front-end routing ecommerce
+app.get("/{*splat}", function (req, res) {
+    res.sendFile(path.resolve(__dirname, "client", "ecommerce", "dist", "index.html"));
+});
+
+
 // // Serve React Client
 // app.use("/super-admin", express.static(path.join(__dirname, "client", "super-admin", "dist"), {
 //     index: false,
