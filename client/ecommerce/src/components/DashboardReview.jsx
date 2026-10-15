@@ -1,8 +1,65 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import ReactStars from "react-stars";
 import Paginate from "../helper/Paginate";
+import reviewStore from "../store/reviewStore";
+import invoiceStore from "../store/invoiceStore";
+import { useEffect } from "react";
+import { baseURLFile } from "../helper/config";
+import { ErrorToast, formatDate, IsEmpty } from "../helper/helper";
+import { useState } from "react";
 
 const DashboardReview = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const per_page = 6;
+  const page_no = searchParams.get("page_no") || 1;
+
+  let { createReviewRequest } = reviewStore();
+  let {
+    readInvoiceProductListSingleUserRequest,
+    readInvoiceProductListSingleUser,
+    totalInvoceProduct,
+  } = invoiceStore();
+
+  useEffect(() => {
+    readInvoiceProductListSingleUserRequest(per_page, page_no);
+  }, [readInvoiceProductListSingleUserRequest, per_page, page_no]);
+
+  // pagination function
+  const handelPageClick = async (event) => {
+    let page_no = event.selected;
+    await readInvoiceProductListSingleUserRequest(per_page, page_no + 1);
+    navigate(`/dashboard-review?page_no=${page_no + 1}`);
+  };
+
+  // For Rating work start
+  let [rating, setRating] = useState(0);
+  let [data, setData] = useState({
+    des: "",
+    rating: "",
+    product_id: "",
+    invoice_id: "",
+  })
+
+  const ratingChanged = (newRating) => {
+    setRating(newRating);
+    setData({ ...data, rating: newRating });
+  }
+
+  // Validation rules
+  const validations = [
+    { field: data.des, message: "Description is required!" },
+    { field: data.rating, message: "Rating is required!" },
+  ]
+
+  let submitReview = () => {
+    for (const { field, message } of validations) {
+      if (IsEmpty(field)) {
+        return ErrorToast(message);
+      }
+    }
+    createReviewRequest(data);
+  }
   return (
     <div className="dashboard-body__content">
       point
@@ -22,71 +79,92 @@ const DashboardReview = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <div className="review-product d-flex align-items-center gap-2">
-                      <div className="review-product__thumb flex-shrink-0">
-                        <img
-                          src={`https://placehold.co/50x50`}
-                          alt="review product"
-                        />
-                      </div>
-                      <div className="review-product__content">
-                        <h6 className="review-product__name font-15 fw-500 mb-0">
-                          <Link
-                            target="_blank"
-                            to={`/product-details?product_id=1`}
-                            className="link"
-                          >
-                            Baby Toy
-                          </Link>
-                        </h6>
-                        <span className="review-product__date font-12">
-                          Dec 1, 2020
-                        </span>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="product-user font-16">
-                      <strong className="fw-600 badge bg-dark text-capitalize">
-                        Red
-                      </strong>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="product-user font-16">
-                      <strong className="fw-600 badge bg-dark text-uppercase">
-                        L
-                      </strong>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="product-user font-16">
-                      <strong className="fw-600 badge bg-dark">2</strong>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="product-user font-16">
-                      <strong className="fw-600 badge bg-danger ">1000</strong>
-                    </div>
-                  </td>
+                {
+                  readInvoiceProductListSingleUser?.length < 1 && (
+                    <p>No data found!</p>
+                  )
+                }
+                {
+                  readInvoiceProductListSingleUser?.map((item, index) =>
+                    <tr key={index}>
+                      <td>
+                        <div className="review-product d-flex align-items-center gap-2">
+                          <div className="review-product__thumb flex-shrink-0">
+                            <img
+                              src={`${baseURLFile}/${item?.product?.images?.[0]}`}
+                              alt="review product"
+                            />
+                          </div>
+                          <div className="review-product__content">
+                            <h6 className="review-product__name font-15 fw-500 mb-0">
+                              <Link
+                                target="_blank"
+                                to={`/product-details?product_id=${item?.product?._id}`}
+                                className="link"
+                              >
+                                {item?.product_name}
+                              </Link>
+                            </h6>
+                            <span className="review-product__date font-12">
+                              {formatDate(item?.createdAt)}
+                            </span>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="product-user font-16">
+                          <strong className="fw-600 badge bg-dark text-capitalize">
+                            {item?.color}
+                          </strong>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="product-user font-16">
+                          <strong className="fw-600 badge bg-dark text-uppercase">
+                            {item?.size}
+                          </strong>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="product-user font-16">
+                          <strong className="fw-600 badge bg-dark">{item?.qty}</strong>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="product-user font-16">
+                          <strong className="fw-600 badge bg-danger ">${item?.price}</strong>
+                        </div>
+                      </td>
 
-                  <td>
-                    <button
-                      data-bs-toggle="modal"
-                      data-bs-target={`#exampleModal_1`}
-                      className="btn btn-main"
-                    >
-                      Make a review
-                    </button>
-                  </td>
-                </tr>
+                      <td>
+                        <button
+                          data-bs-toggle="modal"
+                          data-bs-target={`#exampleModal_1`}
+                          className="btn btn-main"
+                          onClick={() =>
+                            setData({
+                              ...data,
+                              invoice_id: item?._id,
+                              product_id: item?.product?._id,
+                            })
+                          }
+                        >
+                          Make a review
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                }
               </tbody>
             </table>
             <div className="flx-between justify-content-end gap-2">
               <nav aria-label="Page navigation example">
-                <Paginate page_no={1} per_page={5} totalCount={10} />
+                <Paginate
+                  handelPageClick={handelPageClick}
+                  page_no={page_no}
+                  per_page={per_page}
+                  totalCount={totalInvoceProduct}
+                />
               </nav>
             </div>
           </div>
@@ -130,7 +208,13 @@ const DashboardReview = () => {
                                     <label className="form-label mb-2 font-18 font-heading fw-600">
                                       Add Feedback
                                     </label>
-                                    <textarea className="common-input border"></textarea>
+                                    <textarea
+                                      onChange={(e) => {
+                                        setData({
+                                          ...data,
+                                          des: e.target.value
+                                        })
+                                      }} className="common-input border"></textarea>
                                   </div>
                                   <div className="col-12">
                                     <label className="form-label mb-2 font-18 font-heading fw-600">
@@ -140,8 +224,9 @@ const DashboardReview = () => {
                                       count={5}
                                       size={34}
                                       color2={"#ffd700"}
-                                      value={4}
+                                      value={rating}
                                       half={false}
+                                      onChange={ratingChanged}
                                     />
                                   </div>
                                 </div>
@@ -162,7 +247,7 @@ const DashboardReview = () => {
                 >
                   Close
                 </button>
-                <button data-bs-dismiss="modal" className="btn btn-primary">
+                <button onClick={() => submitReview()} data-bs-dismiss="modal" className="btn btn-primary">
                   Submit review
                 </button>
               </div>
