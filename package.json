@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "build": "npm --prefix client/ecommerce run build && npm --prefix client/super-admin run build && rm -rf public && mkdir -p public/super-admin && cp -r client/ecommerce/dist/. public/ && cp -r client/super-admin/dist/. public/super-admin/"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@supabase/supabase-js": "^2.109.0",
     "axios": "^1.17.0",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
