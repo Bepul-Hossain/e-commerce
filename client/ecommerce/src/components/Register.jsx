@@ -3,11 +3,13 @@ import ThemeToggle from "./ThemeToggle";
 import userStore from "../store/userStore";
 import { useState } from "react";
 import { ErrorToast, IsEmpty } from "../helper/helper";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 const Register = () => {
   let { userRegisterLoading, userRegisterRequest } = userStore()
   const navigate = useNavigate();
   let [data, setData] = useState({ email: "", password: "" });
+  let [showPassword, setShowPassword] = useState(false);
   // validation rules
   const validations = [
     { field: data.email, message: "Email is required!" },
@@ -104,17 +106,19 @@ const Register = () => {
                     <input
                       onChange={(e) => setData({ ...data, password: e.target.value })}
                       required
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       className="common-input common-input--bg common-input--withIcon"
                       id="your-password"
                       placeholder="6+ characters, 1 Capital letter"
                     />
-                    <span
-                      className="input-icon toggle-password cursor-pointer"
-                      id="#your-password"
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="input-icon toggle-password cursor-pointer border-0 bg-transparent p-0"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                     >
-                      <img src="assets/images/icons/lock-icon.svg" alt="" />
-                    </span>
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
                   </div>
                 </div>
 
