@@ -144,86 +144,62 @@ exports.logout = async (req, res) => {
     }
 }
 
+// Profile fields a logged-in user may change. Email and password are
+// deliberately excluded: the user is already authenticated by the u_token
+// cookie (authVerificationUser), so no password is needed to edit the profile.
+const PROFILE_FIELDS = [
+    "cus_name",
+    "cus_add",
+    "cus_city",
+    "cus_country",
+    "cus_fax",
+    "cus_phone",
+    "cus_postcode",
+    "cus_state",
+
+    // Shipping Information
+    "ship_name",
+    "ship_add",
+    "ship_city",
+    "ship_country",
+    "ship_phone",
+    "ship_postcode",
+    "ship_state",
+];
+
 // User update
 exports.update = async (req, res) => {
     try {
         const email = req.headers.email;
         const _id = req.headers._id;
-        const {
-            password,
-            cus_name,
-            cus_add,
-            cus_city,
-            cus_country,
-            cus_fax,
-            cus_phone,
-            cus_postcode,
-            cus_state,
 
-            // Shipping Information
-            ship_name,
-            ship_add,
-            ship_city,
-            ship_country,
-            ship_phone,
-            ship_postcode,
-            ship_state,
-        } = req.body;
-
-        let updatedData = {
-            email,
-            password,
-            cus_name,
-            cus_add,
-            cus_city,
-            cus_country,
-            cus_fax,
-            cus_phone,
-            cus_postcode,
-            cus_state,
-
-            // Shipping Information
-            ship_name,
-            ship_add,
-            ship_city,
-            ship_country,
-            ship_phone,
-            ship_postcode,
-            ship_state,
+        // Copy only allowed fields that were actually sent
+        const updatedData = {};
+        for (const field of PROFILE_FIELDS) {
+            if (req.body[field] !== undefined) {
+                updatedData[field] = req.body[field];
+            }
         }
 
-        const user = await userModel.findOne({ email, _id });
-        if (!user) {
+        const updatedUser = await userModel.findOneAndUpdate(
+            { _id, email },
+            { $set: updatedData },
+            { new: true, projection: { password: 0 } }
+        );
+        if (!updatedUser) {
             return res.status(404).json({
                 success: false,
                 message: "User not found.",
             });
         }
 
-        if (password) {
-            const hashedPassword = await bcript.hash(password.toString(), 10);
-            updatedData.password = hashedPassword;
-        }
-
-        const isMatch = await bcript.compare(password.toString(), updatedData.password);
-        if (!isMatch) {
-            return res.status(401).json({
-                success: false,
-                message: "Invalid password.",
-            });
-        }
-
-        const updatedUser = await userModel.findByIdAndUpdate(_id, updatedData, { new: true });
-        
-        let token = EncodeToken(updatedUser.email, updatedUser._id.toString());
-        res.cookie("u_token", token, options);
         res.status(200).json({
             success: true,
             message: "User updated successfully.",
             user: {
                 id: updatedUser._id,
                 email: updatedUser.email,
-            }, 
+            },
         });
 
     } catch (error) {

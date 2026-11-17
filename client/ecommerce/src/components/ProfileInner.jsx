@@ -8,7 +8,6 @@ const ProfileInner = () => {
 
   let [data, setData] = useState({
     cus_name: "",
-    password: "",
     cus_add: "",
     cus_city: "",
     cus_country: "",
@@ -30,7 +29,6 @@ const ProfileInner = () => {
     if (user) {
       setData({
         cus_add: user?.cus_add || "",
-        password: user?.password || "",
         cus_city: user?.cus_city || "",
         cus_country: user?.cus_country || "",
         cus_fax: user?.cus_fax || "",
@@ -53,7 +51,6 @@ const ProfileInner = () => {
   //Validation rules
   const validations = [
     { field: data.cus_name, message: "Customer name is required." },
-    { field: data.password, message: "Password is required." },
     { field: data.cus_add, message: "Customer address is required." },
     { field: data.cus_city, message: "Customer city is required." },
     { field: data.cus_country, message: "Customer country is required." },
@@ -187,29 +184,6 @@ const ProfileInner = () => {
                           </div>
 
                           <div className="col-sm-6 col-xs-6">
-                            <label
-                              htmlFor="confirm-password"
-                              className="form-label mb-2 font-18 font-heading fw-600"
-                            >
-                              Password
-                            </label>
-                            <div className="position-relative">
-                              <input
-                                onChange={handleChange}
-                                value={data?.password}
-                                name="password"
-                                type="password"
-                                className="common-input common-input--withIcon common-input--withLeftIcon "
-                              />
-                              <span className="input-icon input-icon--left">
-                                <img
-                                  src="assets/images/icons/lock-two.svg"
-                                  alt=""
-                                />
-                              </span>
-                            </div>
-                          </div>
-                          <div className="col-sm-6 col-xs-6">
                             <label className="form-label mb-2 font-18 font-heading fw-600">
                               Customer address
                             </label>
@@ -293,7 +267,7 @@ const ProfileInner = () => {
                               placeholder="Customer postcode"
                             />
                           </div>
-                          <div className="col-12">
+                          <div className="col-sm-6 col-xs-6">
                             <label className="form-label mb-2 font-18 font-heading fw-600">
                               Customer state
                             </label>
