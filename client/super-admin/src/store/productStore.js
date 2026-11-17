@@ -6,12 +6,12 @@ import { ErrorToast, SuccessToast } from "../helper/helper";
 const productStore = create((set) => ({
     // create product
     createProductLoading: false,
-    createProductRequest: async () => {
+    createProductRequest: async (data) => {
         try {
             set({ createProductLoading: true })
-            let res = await axios.post(baseURL + "/create-product", {
+            // 2nd argument is the request body, 3rd is the axios config
+            let res = await axios.post(baseURL + "/create-product", data, {
                 withCredentials: true,
-                credentials: "include",
             })
             if (res?.data?.success === true) {
                 set({ createProductLoading: false })
@@ -24,7 +24,8 @@ const productStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            // Show the server's validation message (e.g. "Title is required.")
+            ErrorToast(error?.response?.data?.message || "Something went wrong.");
             set({ createProductLoading: false })
             return false
         }
