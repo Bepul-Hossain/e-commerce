@@ -145,7 +145,7 @@ const FileManager = () => {
                                       SuccessToast("Copied: " + item?.filename);
                                     }}
                                   >
-                                    Image1.jpg
+                                    {item?.filename}
                                   </p>
                                 </div>
                               </div>

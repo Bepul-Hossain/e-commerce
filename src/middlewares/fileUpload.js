@@ -6,9 +6,20 @@ const { put } = require('@vercel/blob');
 const useBlob = !!process.env.BLOB_READ_WRITE_TOKEN;
 
 const makeFileName = (originalname) => {
-    const sanitizedFilename = originalname.replace(/[^a-zA-Z0-9.\-_]/g, '');
-    return "api-img-" + Date.now() + "-" + sanitizedFilename;
-}
+    const d = new Date();
+    const formatted = `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
+
+    // Separate the file extension so it stays at the very end
+    const lastDotIndex = originalname.lastIndexOf('.');
+    const name = lastDotIndex !== -1 ? originalname.substring(0, lastDotIndex) : originalname;
+    const ext = lastDotIndex !== -1 ? originalname.substring(lastDotIndex) : '';
+
+    // Sanitize the name and extension
+    const sanitizedName = name.replace(/[^a-zA-Z0-9\-_]/g, '');
+    const sanitizedExt = ext.replace(/[^a-zA-Z0-9.]/g, '');
+
+    return `${sanitizedName}-${formatted}-${Date.now()}${sanitizedExt}`;
+};
 
 //Configure storage engine
 const storage = useBlob ? multer.memoryStorage() : multer.diskStorage({
