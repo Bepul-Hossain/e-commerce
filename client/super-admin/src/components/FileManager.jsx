@@ -2,15 +2,45 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { baseURLFile } from "../helper/config";
 import { DeleteAlertFile, ErrorToast, SuccessToast } from "../helper/helper";
 import Paginate from "../helper/Paginate";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import fileStore from "../store/fileStore";
 import { useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
+
+// Must match the server limit in src/middlewares/fileUpload.js
+const MAX_FILE_SIZE = 200 * 1024; // 200KB
+
+const formatSize = (bytes) =>
+  bytes < 1024 ? `${bytes} B` : `${(bytes / 1024).toFixed(1)} KB`;
 
 const FileManager = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [file, setFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  // Natural pixel size of the selected image, read when the preview loads
+  const [dimensions, setDimensions] = useState(null);
+  const fileInputRef = useRef(null);
+
+  // Build a local preview URL for the selected file; free it when the
+  // file changes or the component unmounts
+  useEffect(() => {
+    setDimensions(null);
+    if (!file || !file.type.startsWith("image/")) {
+      setPreviewUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
+
+  const clearFile = () => {
+    setFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const isTooLarge = file && file.size > MAX_FILE_SIZE;
 
   const {
     fileUploadRequest,
@@ -42,7 +72,12 @@ const FileManager = () => {
       ErrorToast("Please select a file");
       return;
     }
-    await fileUploadRequest(file);
+    if (isTooLarge) {
+      ErrorToast("File too large! Maximum size is 200KB.");
+      return;
+    }
+    const ok = await fileUploadRequest(file);
+    if (ok) clearFile();
     await allFileRequest(per_page, page_no);
   };
 
@@ -71,15 +106,77 @@ const FileManager = () => {
               <div className="profile-info">
                 <div className="container my-5 p-4 border rounded shadow-sm bg-white">
                   <h4 className="mb-3">Upload Files</h4>
-                  {/* Upload Input */}
-                  <div className="mb-3">
-                    <input onChange={(e) => setFile(e.target.files[0])} type="file" className="form-control" multiple />
-                  </div>
 
-                  <div>
-                    <button onClick={handleUpload} disabled={fileUploadLoading} className="btn btn-danger ">
-                      {fileUploadLoading ? "Uploading..." : "Upload"}
-                    </button>
+                  {/* lg+: 2 columns (input | preview). Below lg: 1 column, stacked */}
+                  <div className="row g-4">
+                    {/* Column 1: choose file + file name + upload */}
+                    <div className="col-12 col-lg-6">
+                      <div className="mb-3">
+                        <input
+                          ref={fileInputRef}
+                          onChange={(e) => setFile(e.target.files[0] || null)}
+                          type="file"
+                          accept="image/*"
+                          className="form-control"
+                        />
+                      </div>
+
+                      {file && (
+                        <div className="mb-3 d-flex align-items-start gap-2 p-2 border rounded">
+                          <div className="flex-grow-1 text-break">
+                            <p className="mb-1 fw-600">{file.name}</p>
+                            <p className={`mb-0 small ${isTooLarge ? "text-danger" : "text-muted"}`}>
+                              {formatSize(file.size)}
+                              {isTooLarge && " — too large, max 200KB"}
+                            </p>
+                            {dimensions && (
+                              <p className="mb-0 small text-muted">
+                                {dimensions.width} × {dimensions.height} px
+                              </p>
+                            )}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={clearFile}
+                            disabled={fileUploadLoading}
+                            className="btn btn-outline-secondary btn-sm"
+                            aria-label="Remove selected file"
+                          >
+                            &times;
+                          </button>
+                        </div>
+                      )}
+
+                      <button onClick={handleUpload} disabled={fileUploadLoading || !file || isTooLarge} className="btn btn-danger ">
+                        {fileUploadLoading ? "Uploading..." : "Upload"}
+                      </button>
+                    </div>
+
+                    {/* Column 2: preview of the selected file, before upload */}
+                    <div className="col-12 col-lg-6">
+                      <div
+                        className="border rounded d-flex align-items-center justify-content-center overflow-hidden bg-light"
+                        style={{ height: 220 }}
+                      >
+                        {previewUrl ? (
+                          <img
+                            src={previewUrl}
+                            alt="Preview"
+                            onLoad={(e) =>
+                              setDimensions({
+                                width: e.currentTarget.naturalWidth,
+                                height: e.currentTarget.naturalHeight,
+                              })
+                            }
+                            style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                          />
+                        ) : (
+                          <span className="text-muted small">
+                            {file ? "No preview available" : "Image preview will appear here"}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
