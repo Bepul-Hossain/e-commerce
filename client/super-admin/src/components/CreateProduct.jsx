@@ -1,7 +1,12 @@
 import ReactQuill from "react-quill-new";
+import { useState } from "react";
 import { formats, modules } from "../helper/helper";
+import ImagePicker from "./ImagePicker";
 
 const CreateProduct = () => {
+  // Selected image filenames, e.g. ["api-img-1-a.png", "api-img-2-b.jpg"]
+  const [images, setImages] = useState([]);
+
   return (
     <>
       {/* Cover Photo Start */}
@@ -43,14 +48,9 @@ const CreateProduct = () => {
                           </div>
                           <div className="col-12">
                             <label className="form-label mb-2 font-18 font-heading fw-600">
-                              Image (Use comma for multi images. Ex:
-                              image_1.png, image_2.jpg, image_3.png)
+                              Images (search and click to select multiple)
                             </label>
-                            <textarea
-                              name=""
-                              id=""
-                              className="common-input border"
-                            ></textarea>
+                            <ImagePicker value={images} onChange={setImages} />
                           </div>
                           <div className="col-sm-4 col-xs-4">
                             <label className="form-label mb-2 font-18 font-heading fw-600">
