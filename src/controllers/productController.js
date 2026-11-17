@@ -111,57 +111,41 @@ exports.createProduct = async (req, res) => {
     }
 }
 
+// A path param counts as "not set" when it's "0" (the clients send 0 for empty)
+const isSet = (value) => value !== undefined && value !== "" && value !== "0";
+
 // Get all products with pagination
+// GET /all-products/:category_id/:brand_id/:remark/:keyword/:per_page/:page_no
+// Filters can be combined (AND). Use 0 for any filter that isn't used.
 exports.allProduct = async (req, res) => {
     try {
-        let page_no = parseInt(req.params.page_no);
-        let per_page = parseInt(req.params.per_page);
-        let category_id = req.params.category_id;
-        let brand_id = req.params.brand_id;
-        let remark = req.params.remark;
-        let keyword = req.params.keyword;
-        console.log("🚀 > productController.js:70 > keyword:", keyword);
+        let page_no = Math.max(parseInt(req.params.page_no) || 1, 1);
+        let per_page = Math.min(Math.max(parseInt(req.params.per_page) || 10, 1), 100);
+        let { category_id, brand_id, remark, keyword } = req.params;
 
         let skipRow = (page_no - 1) * per_page;
-
         let sortStage = { createdAt: -1 };
 
-        let MatchingStage;
-
-        if (category_id != 0) {
-            MatchingStage = {
-                $match: {
-                    category_id: new ObjectId(category_id),
-                }
+        let match = {};
+        if (isSet(category_id)) {
+            if (!mongoose.isValidObjectId(category_id)) {
+                return res.status(400).json({ success: false, message: "Invalid category id." });
             }
-        } else if (brand_id != 0) {
-            MatchingStage = {
-                $match: {
-                    brand_id: new ObjectId(brand_id),
-                }
+            match.category_id = new ObjectId(category_id);
+        }
+        if (isSet(brand_id)) {
+            if (!mongoose.isValidObjectId(brand_id)) {
+                return res.status(400).json({ success: false, message: "Invalid brand id." });
             }
-        } else if (remark != 0) {
-            MatchingStage = {
-                $match: {
-                    remark: remark,
-                }
-            }
-        } else if (keyword != 0) {
-            let searchRegex = {
-                $regex: keyword,
-                $options: "i"
-            }
-            let searchParams = [{ title: searchRegex }]
-            let searchStage = {
-                $or: searchParams
-            }
-            MatchingStage = {
-                $match: searchStage
-            }
-        } else {
-            MatchingStage = {
-                $match: {}
-            }
+            match.brand_id = new ObjectId(brand_id);
+        }
+        if (isSet(remark)) {
+            match.remark = remark;
+        }
+        if (isSet(keyword)) {
+            // Escape regex special characters so the keyword is matched literally
+            let escaped = keyword.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            match.title = { $regex: escaped, $options: "i" };
         }
 
         let joinWithCategory = {
@@ -173,6 +157,15 @@ exports.allProduct = async (req, res) => {
             }
         }
 
+        let joinWithBrand = {
+            $lookup: {
+                from: "brands",
+                localField: "brand_id",
+                foreignField: "_id",
+                as: "brand"
+            }
+        }
+
         let facetStage = {
             $facet: {
                 totalCount: [{ $count: "count" }],
@@ -181,6 +174,7 @@ exports.allProduct = async (req, res) => {
                     { $skip: skipRow },
                     { $limit: per_page },
                     joinWithCategory,
+                    joinWithBrand,
                     {
                         $project: {
                             _id: 1,
@@ -194,14 +188,15 @@ exports.allProduct = async (req, res) => {
                             remark: 1,
                             stock: 1,
                             createdAt: 1,
-                            "category.category_name": 1
+                            "category.category_name": 1,
+                            "brand.brand_name": 1,
                         }
                     }
                 ]
             }
         }
 
-        let products = await productModel.aggregate([MatchingStage, facetStage]);
+        let products = await productModel.aggregate([{ $match: match }, facetStage]);
         let totalCount = products[0]?.totalCount[0]?.count || 0;
         res.status(200).json({
             success: true,
@@ -223,6 +218,9 @@ exports.allProduct = async (req, res) => {
 
 exports.signleProduct = async (req, res) => {
     try {
+        if (!mongoose.isValidObjectId(req.params.id)) {
+            return res.status(400).json({ success: false, message: "Invalid product id." });
+        }
         let id = new ObjectId(req.params.id);
 
         let matchStage = {
@@ -249,6 +247,9 @@ exports.signleProduct = async (req, res) => {
         }
 
         let data = await productModel.aggregate([matchStage, joinMatchCategory, joinMatchBrand]);
+        if (data.length === 0) {
+            return res.status(404).json({ success: false, message: "Product not found." });
+        }
 
         res.status(200).json({
             success: true,
@@ -301,7 +302,13 @@ exports.updateProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
     try {
         let id = req.params.id;
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(400).json({ success: false, message: "Invalid product id." });
+        }
         let data = await productModel.findByIdAndDelete(id);
+        if (!data) {
+            return res.status(404).json({ success: false, message: "Product not found." });
+        }
         res.status(200).json({
             success: true,
             message: "Product deleted successfully.",

@@ -33,23 +33,26 @@ const productStore = create((set) => ({
     // all products
     totalProducts: null,
     allProducts: null,
+    // Empty filters are sent as 0 (the API treats "0" as "not set")
     allProductsRequest: async (category_id, brand_id, remark, keyword, per_page, page_no) => {
         try {
+            const seg = (v) => encodeURIComponent(v === "" || v == null ? 0 : v);
             let res = await axios.get(baseURL +
-                `/all-products/${category_id}/${brand_id}/${remark}/${keyword}/${per_page}/${page_no}`,
+                `/all-products/${seg(category_id)}/${seg(brand_id)}/${seg(remark)}/${seg(keyword)}/${per_page}/${page_no}`,
                 {
                     withCredentials: true,
-                    credentials: "include",
                 }
             )
             if (res?.data?.success === true) {
-                set({ allProducts: res?.data?.data?.products, })
-                set({ totalProducts: res?.data?.data?.totalCount?.[0]?.count })
+                set({
+                    allProducts: res?.data?.data?.products || [],
+                    totalProducts: res?.data?.data?.totalCount?.[0]?.count || 0,
+                })
                 return true
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            ErrorToast(error?.response?.data?.message || "Something went wrong.");
             return false
         }
     },
@@ -67,7 +70,7 @@ const productStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            ErrorToast(error?.response?.data?.message || "Something went wrong.");
             return false
         }
     },
@@ -85,7 +88,7 @@ const productStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            ErrorToast(error?.response?.data?.message || "Something went wrong.");
             return false
         }
     },
@@ -105,7 +108,7 @@ const productStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            ErrorToast(error?.response?.data?.message || "Something went wrong.");
             return false
         }
     },
@@ -125,7 +128,7 @@ const productStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            ErrorToast(error?.response?.data?.message || "Something went wrong.");
             return false
         }
     }
