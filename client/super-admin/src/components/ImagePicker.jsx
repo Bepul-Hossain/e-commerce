@@ -5,16 +5,18 @@ import { baseURL, baseURLFile } from "../helper/config";
 const PER_PAGE = 12;
 
 /**
- * Pick multiple images from the uploaded files (searchable by filename).
+ * Pick images from the uploaded files (searchable by filename).
  *
  * Props:
  *  - value:    array of selected filenames, e.g. ["api-img-1-a.png"]
  *  - onChange: called with the new array when the selection changes
+ *  - multiple: true (default) = pick many; false = pick one (clicking another
+ *              image replaces it, value is [] or [filename])
  *
  * Uses its own local state (not fileStore) so it doesn't disturb
  * the File Manager page's list.
  */
-const ImagePicker = ({ value = [], onChange }) => {
+const ImagePicker = ({ value = [], onChange, multiple = true }) => {
   const [searchText, setSearchText] = useState("");
   const [keyword, setKeyword] = useState("");
   const [files, setFiles] = useState([]);
@@ -68,11 +70,11 @@ const ImagePicker = ({ value = [], onChange }) => {
   const isSelected = (filename) => value.includes(filename);
 
   const toggle = (filename) => {
-    onChange(
-      isSelected(filename)
-        ? value.filter((f) => f !== filename)
-        : [...value, filename]
-    );
+    if (isSelected(filename)) {
+      onChange(value.filter((f) => f !== filename));
+    } else {
+      onChange(multiple ? [...value, filename] : [filename]);
+    }
   };
 
   const remove = (filename) => onChange(value.filter((f) => f !== filename));
@@ -84,20 +86,22 @@ const ImagePicker = ({ value = [], onChange }) => {
       {/* Selected images (in the order they were picked; first = main image) */}
       <div className="mb-3">
         <p className="mb-2 small fw-600">
-          Selected: {value.length}
+          {multiple ? `Selected: ${value.length}` : "Selected image"}
           {value.length > 0 && (
             <button
               type="button"
               onClick={() => onChange([])}
               className="btn btn-link btn-sm text-danger p-0 ms-2 align-baseline"
             >
-              Clear all
+              {multiple ? "Clear all" : "Clear"}
             </button>
           )}
         </p>
         {value.length === 0 ? (
           <p className="text-muted small mb-0">
-            No images selected. Click images below to select them.
+            {multiple
+              ? "No images selected. Click images below to select them."
+              : "No image selected. Click an image below to select it."}
           </p>
         ) : (
           <div className="d-flex flex-wrap gap-2">
@@ -113,7 +117,7 @@ const ImagePicker = ({ value = [], onChange }) => {
                   alt={filename}
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
-                {index === 0 && (
+                {multiple && index === 0 && (
                   <span className="badge bg-primary position-absolute bottom-0 start-0 m-1">
                     Main
                   </span>
@@ -199,7 +203,7 @@ const ImagePicker = ({ value = [], onChange }) => {
                   />
                   {selected && (
                     <span className="badge bg-primary position-absolute top-0 end-0 m-1">
-                      {value.indexOf(item.filename) + 1}
+                      {multiple ? value.indexOf(item.filename) + 1 : "✓"}
                     </span>
                   )}
                   <span className="d-block small text-truncate px-1">

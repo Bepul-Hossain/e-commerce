@@ -24,7 +24,7 @@ const brandStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            ErrorToast(error?.response?.data?.message || "Something went wrong.");
             set({ createBrandLoading: false })
             return false
         }
@@ -47,7 +47,7 @@ const brandStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            ErrorToast(error?.response?.data?.message || "Something went wrong.");
             return false
         }
     },
@@ -65,7 +65,7 @@ const brandStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            ErrorToast(error?.response?.data?.message || "Something went wrong.");
             return false
         }
     },
@@ -82,7 +82,7 @@ const brandStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            ErrorToast(error?.response?.data?.message || "Something went wrong.");
             return false
         }
     },
@@ -99,7 +99,7 @@ const brandStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            ErrorToast(error?.response?.data?.message || "Something went wrong.");
             return false
         }
     },
