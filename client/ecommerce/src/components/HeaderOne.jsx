@@ -141,7 +141,7 @@ const HeaderOne = () => {
                       <span className="icon-left icon">
                         <img src="assets/images/icons/user.svg" alt="" />
                       </span>
-                      Create Account
+                      Create new Account
                     </Link>
                   </div></>
                 )
@@ -211,7 +211,7 @@ const HeaderOne = () => {
                 <span className="icon-left icon">
                   <img src="assets/images/icons/user.svg" alt="" />
                 </span>
-                Create Account
+                Create new Account
               </Link>
             </div>
           </div>
