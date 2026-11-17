@@ -21,6 +21,9 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('Connected to MongoDB'))
     .catch((err) => console.error('Error connecting to MongoDB:', err));
 
+// Behind Vercel's proxy: needed so rate limiting sees the real client IP
+app.set('trust proxy', 1);
+
 // Global Middlewares
 app.use(cookieParser());
 app.use(cors({
@@ -48,7 +51,14 @@ app.use(limiter);
 
 app.use("/api/v1", router)
 
-app.use("/api/v1/get-file", express.static("uploads"));
+// On Vercel, files live in Vercel Blob; locally they are served from disk
+if (process.env.BLOB_BASE_URL) {
+    app.get("/api/v1/get-file/:filename", (req, res) => {
+        res.redirect(301, `${process.env.BLOB_BASE_URL}/${encodeURIComponent(req.params.filename)}`);
+    });
+} else {
+    app.use("/api/v1/get-file", express.static("uploads"));
+}
 
 // Add React Front-end static super admin
 app.use("/super-admin", express.static(path.join(__dirname, "client", "super-admin", "dist"), {

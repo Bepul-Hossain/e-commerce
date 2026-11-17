@@ -1,0 +1,1875 @@
+{
+	"info": {
+		"_postman_id": "0f955dbc-2239-400c-9f3b-79f8e17f81cf",
+		"name": "e-commerce",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47123615",
+		"_collection_link": "https://navigation-engineer-70838589-1379591.postman.co/workspace/Md.-Bepul-Hossain's-Workspace~b31e0b8d-5eb0-4ef7-8b01-edbcf5309f82/collection/47123615-0f955dbc-2239-400c-9f3b-79f8e17f81cf?action=share&source=collection_link&creator=47123615"
+	},
+	"item": [
+		{
+			"name": "admin user",
+			"item": [
+				{
+					"name": "admin-register",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": 1234\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}admin-register",
+							"host": [
+								"{{base_url}}admin-register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": 12345\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}admin-login",
+							"host": [
+								"{{base_url}}admin-login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": 1234\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}admin",
+							"host": [
+								"{{base_url}}admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin verify",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": 1234\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}admin-verify",
+							"host": [
+								"{{base_url}}admin-verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin logout",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": 1234\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}admin-logout",
+							"host": [
+								"{{base_url}}admin-logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin1@gmail.com\",\n    \"password\": \"12345\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}admin-update",
+							"host": [
+								"{{base_url}}admin-update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dashboard user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": \"12345\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}dashboard-summary",
+							"host": [
+								"{{base_url}}dashboard-summary"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "user-register",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@gmail.com\",\n    \"password\": 1234\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}user-register",
+							"host": [
+								"{{base_url}}user-register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user login",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}user-login?email=test@gmail.com&password=0000",
+							"host": [
+								"{{base_url}}user-login"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "test@gmail.com"
+								},
+								{
+									"key": "password",
+									"value": "0000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": 1234\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}user",
+							"host": [
+								"{{base_url}}user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user verify",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": 1234\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}user-verify",
+							"host": [
+								"{{base_url}}user-verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user logout",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": 1234\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}user-logout",
+							"host": [
+								"{{base_url}}user-logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"0000\",\n\n    \"cus_name\": \"John Doe\",\n    \"cus_add\": \"House 15, Road 5, Dhanmondi\",\n    \"cus_city\": \"Dhaka\",\n    \"cus_country\": \"Bangladesh\",\n    \"cus_fax\": \"+88029665544\",\n    \"cus_phone\": \"+8801712345678\",\n    \"cus_postcode\": \"1209\",\n    \"cus_state\": \"Dhaka\",\n    \"ship_name\": \"John Doe\",\n    \"ship_add\": \"House 25, Road 10, Uttara\",\n    \"ship_city\": \"Dhaka\",\n    \"ship_country\": \"Bangladesh\",\n    \"ship_phone\": \"+8801812345678\",\n    \"ship_postcode\": \"1230\",\n    \"ship_state\": \"Dhaka\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}user-update",
+							"host": [
+								"{{base_url}}user-update"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "product",
+			"item": [
+				{
+					"name": "create product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Redmi 12\",\n    \"images\": [\n        \"image-1.jpg\",\n        \"image-2.jpg\",\n        \"image-3.jpg\"\n    ],\n    \"short_description\": \"Comfortable and stylish running shoes for everyday use.\",\n    \"price\": 12000,\n    \"is_discount\": true,\n    \"discount_price\": 9999,\n    \"remarks\": \"Popular\",\n    \"stock\": 50,\n    \"color\": [\n        \"Black\",\n        \"White\",\n        \"Red\"\n    ],\n    \"size\": [\n        \"39\",\n        \"40\",\n        \"41\",\n        \"42\",\n        \"43\"\n    ],\n    \"description\": \"Redmi 12 features a large Air unit for maximum comfort, breathable mesh upper, and durable rubber outsole.\",\n    \"category_id\": \"685f1c4a7d8e9f1234567890\",\n    \"brand_id\": \"685f1c4a7d8e9f0987654321\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}create-product",
+							"host": [
+								"{{base_url}}create-product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Redmi 12 updated\",\n    \"images\": [\n        \"image-1.jpg\",\n        \"image-2.jpg\",\n        \"image-3.jpg\"\n    ],\n    \"short_description\": \"Comfortable and stylish running shoes for everyday use.\",\n    \"price\": 12000,\n    \"is_discount\": true,\n    \"discount_price\": 9999,\n    \"remarks\": \"Popular\",\n    \"stock\": 50,\n    \"color\": [\n        \"Black\",\n        \"White\",\n        \"Red\"\n    ],\n    \"size\": [\n        \"39\",\n        \"40\",\n        \"41\",\n        \"42\",\n        \"43\"\n    ],\n    \"description\": \"Redmi 12 features a large Air unit for maximum comfort, breathable mesh upper, and durable rubber outsole.\",\n    \"category_id\": \"685f1c4a7d8e9f1234567890\",\n    \"brand_id\": \"685f1c4a7d8e9f0987654321\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}update-product/6a266ade2f993366862361e1",
+							"host": [
+								"{{base_url}}update-product"
+							],
+							"path": [
+								"6a266ade2f993366862361e1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}delete-product/6a266ade2f993366862361e1",
+							"host": [
+								"{{base_url}}delete-product"
+							],
+							"path": [
+								"6a266ade2f993366862361e1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all products",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"0000\",\n\n    \"cus_name\": \"John Doe\",\n    \"cus_add\": \"House 15, Road 5, Dhanmondi\",\n    \"cus_city\": \"Dhaka\",\n    \"cus_country\": \"Bangladesh\",\n    \"cus_fax\": \"+88029665544\",\n    \"cus_phone\": \"+8801712345678\",\n    \"cus_postcode\": \"1209\",\n    \"cus_state\": \"Dhaka\",\n    \"ship_name\": \"John Doe\",\n    \"ship_add\": \"House 25, Road 10, Uttara\",\n    \"ship_city\": \"Dhaka\",\n    \"ship_country\": \"Bangladesh\",\n    \"ship_phone\": \"+8801812345678\",\n    \"ship_postcode\": \"1230\",\n    \"ship_state\": \"Dhaka\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}all-products/685f1c4a7d8e9f1234567890/0/0/0/10/1",
+							"host": [
+								"{{base_url}}all-products"
+							],
+							"path": [
+								"685f1c4a7d8e9f1234567890",
+								"0",
+								"0",
+								"0",
+								"10",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "single product",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"0000\",\n\n    \"cus_name\": \"John Doe\",\n    \"cus_add\": \"House 15, Road 5, Dhanmondi\",\n    \"cus_city\": \"Dhaka\",\n    \"cus_country\": \"Bangladesh\",\n    \"cus_fax\": \"+88029665544\",\n    \"cus_phone\": \"+8801712345678\",\n    \"cus_postcode\": \"1209\",\n    \"cus_state\": \"Dhaka\",\n    \"ship_name\": \"John Doe\",\n    \"ship_add\": \"House 25, Road 10, Uttara\",\n    \"ship_city\": \"Dhaka\",\n    \"ship_country\": \"Bangladesh\",\n    \"ship_phone\": \"+8801812345678\",\n    \"ship_postcode\": \"1230\",\n    \"ship_state\": \"Dhaka\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}single-product/6a266ade2f993366862361e1",
+							"host": [
+								"{{base_url}}single-product"
+							],
+							"path": [
+								"6a266ade2f993366862361e1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "category",
+			"item": [
+				{
+					"name": "create category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"category_name\": \"Category ABC1\",\n    \"category_img\": \"image-1.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}create-category",
+							"host": [
+								"{{base_url}}create-category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"category_name\": \"Category ABC1 updated\",\n    \"category_img\": \"image-1.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}update-category/6a293fb3948c6d3c1b7627a8",
+							"host": [
+								"{{base_url}}update-category"
+							],
+							"path": [
+								"6a293fb3948c6d3c1b7627a8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}delete-category/6a293fb3948c6d3c1b7627a8",
+							"host": [
+								"{{base_url}}delete-category"
+							],
+							"path": [
+								"6a293fb3948c6d3c1b7627a8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all category",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"0000\",\n\n    \"cus_name\": \"John Doe\",\n    \"cus_add\": \"House 15, Road 5, Dhanmondi\",\n    \"cus_city\": \"Dhaka\",\n    \"cus_country\": \"Bangladesh\",\n    \"cus_fax\": \"+88029665544\",\n    \"cus_phone\": \"+8801712345678\",\n    \"cus_postcode\": \"1209\",\n    \"cus_state\": \"Dhaka\",\n    \"ship_name\": \"John Doe\",\n    \"ship_add\": \"House 25, Road 10, Uttara\",\n    \"ship_city\": \"Dhaka\",\n    \"ship_country\": \"Bangladesh\",\n    \"ship_phone\": \"+8801812345678\",\n    \"ship_postcode\": \"1230\",\n    \"ship_state\": \"Dhaka\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}all-category/10/1",
+							"host": [
+								"{{base_url}}all-category"
+							],
+							"path": [
+								"10",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "single category",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"0000\",\n\n    \"cus_name\": \"John Doe\",\n    \"cus_add\": \"House 15, Road 5, Dhanmondi\",\n    \"cus_city\": \"Dhaka\",\n    \"cus_country\": \"Bangladesh\",\n    \"cus_fax\": \"+88029665544\",\n    \"cus_phone\": \"+8801712345678\",\n    \"cus_postcode\": \"1209\",\n    \"cus_state\": \"Dhaka\",\n    \"ship_name\": \"John Doe\",\n    \"ship_add\": \"House 25, Road 10, Uttara\",\n    \"ship_city\": \"Dhaka\",\n    \"ship_country\": \"Bangladesh\",\n    \"ship_phone\": \"+8801812345678\",\n    \"ship_postcode\": \"1230\",\n    \"ship_state\": \"Dhaka\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}single-category/6a293fb3948c6d3c1b7627a8",
+							"host": [
+								"{{base_url}}single-category"
+							],
+							"path": [
+								"6a293fb3948c6d3c1b7627a8"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "brand",
+			"item": [
+				{
+					"name": "create brand",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"brand_name\": \"brand Samsung\",\n    \"brand_img\": \"image-1.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}create-brand",
+							"host": [
+								"{{base_url}}create-brand"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update brand",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"brand_name\": \"brand ABC1 updated\",\n    \"brand_img\": \"image-1.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}update-brand/6a294d2ef8dcc284c976d967",
+							"host": [
+								"{{base_url}}update-brand"
+							],
+							"path": [
+								"6a294d2ef8dcc284c976d967"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete brand",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}delete-brand/6a294d2ef8dcc284c976d967",
+							"host": [
+								"{{base_url}}delete-brand"
+							],
+							"path": [
+								"6a294d2ef8dcc284c976d967"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all brand",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"0000\",\n\n    \"cus_name\": \"John Doe\",\n    \"cus_add\": \"House 15, Road 5, Dhanmondi\",\n    \"cus_city\": \"Dhaka\",\n    \"cus_country\": \"Bangladesh\",\n    \"cus_fax\": \"+88029665544\",\n    \"cus_phone\": \"+8801712345678\",\n    \"cus_postcode\": \"1209\",\n    \"cus_state\": \"Dhaka\",\n    \"ship_name\": \"John Doe\",\n    \"ship_add\": \"House 25, Road 10, Uttara\",\n    \"ship_city\": \"Dhaka\",\n    \"ship_country\": \"Bangladesh\",\n    \"ship_phone\": \"+8801812345678\",\n    \"ship_postcode\": \"1230\",\n    \"ship_state\": \"Dhaka\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}all-brand/10/1",
+							"host": [
+								"{{base_url}}all-brand"
+							],
+							"path": [
+								"10",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "single brand",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"0000\",\n\n    \"cus_name\": \"John Doe\",\n    \"cus_add\": \"House 15, Road 5, Dhanmondi\",\n    \"cus_city\": \"Dhaka\",\n    \"cus_country\": \"Bangladesh\",\n    \"cus_fax\": \"+88029665544\",\n    \"cus_phone\": \"+8801712345678\",\n    \"cus_postcode\": \"1209\",\n    \"cus_state\": \"Dhaka\",\n    \"ship_name\": \"John Doe\",\n    \"ship_add\": \"House 25, Road 10, Uttara\",\n    \"ship_city\": \"Dhaka\",\n    \"ship_country\": \"Bangladesh\",\n    \"ship_phone\": \"+8801812345678\",\n    \"ship_postcode\": \"1230\",\n    \"ship_state\": \"Dhaka\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}single-brand/6a294d2ef8dcc284c976d967",
+							"host": [
+								"{{base_url}}single-brand"
+							],
+							"path": [
+								"6a294d2ef8dcc284c976d967"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cart",
+			"item": [
+				{
+					"name": "create cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product_id\": \"6a28f4e8ae1aef9e713d480a\",\n    \"product_name\": \"Redmi 12\",\n    \"color\": \"Black\",\n    \"size\": \"40\",\n    \"qty\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}create-cart",
+							"host": [
+								"{{base_url}}create-cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product_id\": \"6a28f4e8ae1aef9e713d480a\",\n    \"color\": \"Black\",\n    \"qty\": 10,\n    \"size\": \"39\",\n    \"inc\": true \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}update-cart/6a2a4818137877c29a3886a2",
+							"host": [
+								"{{base_url}}update-cart"
+							],
+							"path": [
+								"6a2a4818137877c29a3886a2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}delete-cart/6a2a4818137877c29a3886a2",
+							"host": [
+								"{{base_url}}delete-cart"
+							],
+							"path": [
+								"6a2a4818137877c29a3886a2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}read-cart",
+							"host": [
+								"{{base_url}}read-cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "single cart",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"0000\",\n\n    \"cus_name\": \"John Doe\",\n    \"cus_add\": \"House 15, Road 5, Dhanmondi\",\n    \"cus_city\": \"Dhaka\",\n    \"cus_country\": \"Bangladesh\",\n    \"cus_fax\": \"+88029665544\",\n    \"cus_phone\": \"+8801712345678\",\n    \"cus_postcode\": \"1209\",\n    \"cus_state\": \"Dhaka\",\n    \"ship_name\": \"John Doe\",\n    \"ship_add\": \"House 25, Road 10, Uttara\",\n    \"ship_city\": \"Dhaka\",\n    \"ship_country\": \"Bangladesh\",\n    \"ship_phone\": \"+8801812345678\",\n    \"ship_postcode\": \"1230\",\n    \"ship_state\": \"Dhaka\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}single-cart/6a294d2ef8dcc284c976d967",
+							"host": [
+								"{{base_url}}single-cart"
+							],
+							"path": [
+								"6a294d2ef8dcc284c976d967"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "invoice",
+			"item": [
+				{
+					"name": "create invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}create-invoice",
+							"host": [
+								"{{base_url}}create-invoice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product_id\": \"6a28f4e8ae1aef9e713d480a\",\n    \"color\": \"Black\",\n    \"qty\": 10,\n    \"size\": \"39\",\n    \"inc\": true \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}update-cart/6a2a4818137877c29a3886a2",
+							"host": [
+								"{{base_url}}update-cart"
+							],
+							"path": [
+								"6a2a4818137877c29a3886a2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}delete-cart/6a2a4818137877c29a3886a2",
+							"host": [
+								"{{base_url}}delete-cart"
+							],
+							"path": [
+								"6a2a4818137877c29a3886a2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read all invoice single user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}read-all-invoice-single-user/10/1",
+							"host": [
+								"{{base_url}}read-all-invoice-single-user"
+							],
+							"path": [
+								"10",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read single invoice single user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"0000\",\n\n    \"cus_name\": \"John Doe\",\n    \"cus_add\": \"House 15, Road 5, Dhanmondi\",\n    \"cus_city\": \"Dhaka\",\n    \"cus_country\": \"Bangladesh\",\n    \"cus_fax\": \"+88029665544\",\n    \"cus_phone\": \"+8801712345678\",\n    \"cus_postcode\": \"1209\",\n    \"cus_state\": \"Dhaka\",\n    \"ship_name\": \"John Doe\",\n    \"ship_add\": \"House 25, Road 10, Uttara\",\n    \"ship_city\": \"Dhaka\",\n    \"ship_country\": \"Bangladesh\",\n    \"ship_phone\": \"+8801812345678\",\n    \"ship_postcode\": \"1230\",\n    \"ship_state\": \"Dhaka\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}read-single-invoice-single-user/6a2e70ef37658b6d6f4c717c",
+							"host": [
+								"{{base_url}}read-single-invoice-single-user"
+							],
+							"path": [
+								"6a2e70ef37658b6d6f4c717c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read invoice product list single user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"0000\",\n\n    \"cus_name\": \"John Doe\",\n    \"cus_add\": \"House 15, Road 5, Dhanmondi\",\n    \"cus_city\": \"Dhaka\",\n    \"cus_country\": \"Bangladesh\",\n    \"cus_fax\": \"+88029665544\",\n    \"cus_phone\": \"+8801712345678\",\n    \"cus_postcode\": \"1209\",\n    \"cus_state\": \"Dhaka\",\n    \"ship_name\": \"John Doe\",\n    \"ship_add\": \"House 25, Road 10, Uttara\",\n    \"ship_city\": \"Dhaka\",\n    \"ship_country\": \"Bangladesh\",\n    \"ship_phone\": \"+8801812345678\",\n    \"ship_postcode\": \"1230\",\n    \"ship_state\": \"Dhaka\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}read-invoice-product-list-single-user/10/1",
+							"host": [
+								"{{base_url}}read-invoice-product-list-single-user"
+							],
+							"path": [
+								"10",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all-order-list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"0000\",\n\n    \"cus_name\": \"John Doe\",\n    \"cus_add\": \"House 15, Road 5, Dhanmondi\",\n    \"cus_city\": \"Dhaka\",\n    \"cus_country\": \"Bangladesh\",\n    \"cus_fax\": \"+88029665544\",\n    \"cus_phone\": \"+8801712345678\",\n    \"cus_postcode\": \"1209\",\n    \"cus_state\": \"Dhaka\",\n    \"ship_name\": \"John Doe\",\n    \"ship_add\": \"House 25, Road 10, Uttara\",\n    \"ship_city\": \"Dhaka\",\n    \"ship_country\": \"Bangladesh\",\n    \"ship_phone\": \"+8801812345678\",\n    \"ship_postcode\": \"1230\",\n    \"ship_state\": \"Dhaka\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}all-order-list/10/1?from=2026-04-16&to=2026-08-16",
+							"host": [
+								"{{base_url}}all-order-list"
+							],
+							"path": [
+								"10",
+								"1"
+							],
+							"query": [
+								{
+									"key": "from",
+									"value": "2026-04-16"
+								},
+								{
+									"key": "to",
+									"value": "2026-08-16"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all-order-list export csv",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"0000\",\n\n    \"cus_name\": \"John Doe\",\n    \"cus_add\": \"House 15, Road 5, Dhanmondi\",\n    \"cus_city\": \"Dhaka\",\n    \"cus_country\": \"Bangladesh\",\n    \"cus_fax\": \"+88029665544\",\n    \"cus_phone\": \"+8801712345678\",\n    \"cus_postcode\": \"1209\",\n    \"cus_state\": \"Dhaka\",\n    \"ship_name\": \"John Doe\",\n    \"ship_add\": \"House 25, Road 10, Uttara\",\n    \"ship_city\": \"Dhaka\",\n    \"ship_country\": \"Bangladesh\",\n    \"ship_phone\": \"+8801812345678\",\n    \"ship_postcode\": \"1230\",\n    \"ship_state\": \"Dhaka\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}export-csv",
+							"host": [
+								"{{base_url}}export-csv"
+							],
+							"query": [
+								{
+									"key": "from",
+									"value": "2026-04-16",
+									"disabled": true
+								},
+								{
+									"key": "to",
+									"value": "2026-08-16",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"_id\": \"6a2e70ef37658b6d6f4c717c\",\n    \"user_id\": \"6a265b2d7bebd73a7034dc9a\",\n    \"delivery_status\": \"cancel\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}update-invoice",
+							"host": [
+								"{{base_url}}update-invoice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "file upload",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlkIjoiNmEyNTVjOGYyZTQ2OWVmMTU4M2VmZTVmIiwiaWF0IjoxNzkwMDcwODAzLCJleHAiOjE3OTI2NjI4MDN9.YpPDn4vjYVb7F0PlCbrCBeotjnIjuFAGMZAzwcWsRzg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/user/Pictures/Screenshots/image-3.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}file-upload",
+							"host": [
+								"{{base_url}}file-upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all file",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [
+										"/home/user/Pictures/Screenshots/Screenshot from 2026-06-02 11-16-48.png",
+										"/home/user/Pictures/Screenshots/abc.png"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}all-file/2/1",
+							"host": [
+								"{{base_url}}all-file"
+							],
+							"path": [
+								"2",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get file",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [
+										"/home/user/Pictures/Screenshots/Screenshot from 2026-06-02 11-16-48.png",
+										"/home/user/Pictures/Screenshots/abc.png"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}get-file/api-img-1781610403647-abc.png",
+							"host": [
+								"{{base_url}}get-file"
+							],
+							"path": [
+								"api-img-1781610403647-abc.png"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "file remove",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"_id\": \"6a313bd0a05e0789fb39601a\",\n    \"filename\": \"api-img-1781611472573-abc.png\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}file-remove",
+							"host": [
+								"{{base_url}}file-remove"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "review",
+			"item": [
+				{
+					"name": "create review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product_id\": \"6a28f4e8ae1aef9e713d480a\",\n    \"invoice_id\": \"6a28f4e8ae1aef9e713d481a\",\n    \"des\": \"Good product updated\",\n    \"rating\": 4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}create-review",
+							"host": [
+								"{{base_url}}create-review"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"brand_name\": \"brand ABC1 updated\",\n    \"brand_img\": \"image-1.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}update-review/6a294d2ef8dcc284c976d967",
+							"host": [
+								"{{base_url}}update-review"
+							],
+							"path": [
+								"6a294d2ef8dcc284c976d967"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}delete-review/6a294d2ef8dcc284c976d967",
+							"host": [
+								"{{base_url}}delete-review"
+							],
+							"path": [
+								"6a294d2ef8dcc284c976d967"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all review",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"0000\",\n\n    \"cus_name\": \"John Doe\",\n    \"cus_add\": \"House 15, Road 5, Dhanmondi\",\n    \"cus_city\": \"Dhaka\",\n    \"cus_country\": \"Bangladesh\",\n    \"cus_fax\": \"+88029665544\",\n    \"cus_phone\": \"+8801712345678\",\n    \"cus_postcode\": \"1209\",\n    \"cus_state\": \"Dhaka\",\n    \"ship_name\": \"John Doe\",\n    \"ship_add\": \"House 25, Road 10, Uttara\",\n    \"ship_city\": \"Dhaka\",\n    \"ship_country\": \"Bangladesh\",\n    \"ship_phone\": \"+8801812345678\",\n    \"ship_postcode\": \"1230\",\n    \"ship_state\": \"Dhaka\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}all-review/10/1",
+							"host": [
+								"{{base_url}}all-review"
+							],
+							"path": [
+								"10",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all review by single product",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"0000\",\n\n    \"cus_name\": \"John Doe\",\n    \"cus_add\": \"House 15, Road 5, Dhanmondi\",\n    \"cus_city\": \"Dhaka\",\n    \"cus_country\": \"Bangladesh\",\n    \"cus_fax\": \"+88029665544\",\n    \"cus_phone\": \"+8801712345678\",\n    \"cus_postcode\": \"1209\",\n    \"cus_state\": \"Dhaka\",\n    \"ship_name\": \"John Doe\",\n    \"ship_add\": \"House 25, Road 10, Uttara\",\n    \"ship_city\": \"Dhaka\",\n    \"ship_country\": \"Bangladesh\",\n    \"ship_phone\": \"+8801812345678\",\n    \"ship_postcode\": \"1230\",\n    \"ship_state\": \"Dhaka\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}all-review-by-product/6a28f4e8ae1aef9e713d480a",
+							"host": [
+								"{{base_url}}all-review-by-product"
+							],
+							"path": [
+								"6a28f4e8ae1aef9e713d480a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": ""
+		}
+	]
+}

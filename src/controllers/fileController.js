@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { del } = require("@vercel/blob");
 const fileModel = require("../models/fileModel");
 // File upload
 exports.fileUpload = async (req, res) => {
@@ -69,12 +70,16 @@ exports.fileRemove = async (req, res) => {
         let _id = req.body?._id;
         let filename = req.body?.filename;
 
-        const filePath = path.join(__dirname, `../../uploads/${filename}`);
-        fs.unlinkSync(filePath, (err) => {
-            if (err) {
-                console.log(err);
-            }
-        });
+        if (process.env.BLOB_READ_WRITE_TOKEN) {
+            await del(`${process.env.BLOB_BASE_URL}/${filename}`);
+        } else {
+            const filePath = path.join(__dirname, `../../uploads/${filename}`);
+            fs.unlinkSync(filePath, (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        }
 
         let data = await fileModel.deleteOne({ _id, filename });
         res.status(200).json({
