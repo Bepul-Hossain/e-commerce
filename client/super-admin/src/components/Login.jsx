@@ -3,11 +3,13 @@ import ThemeToggle from "./ThemeToggle";
 import adminstore from "../store/adminStore";
 import { useState } from "react";
 import { ErrorToast, IsEmpty } from "../helper/helper";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 const Login = () => {
   const navigate = useNavigate();
   let { adminLoginLoading, adminLoginRequest } = adminstore();
   let [data, setData] = useState({ email: "", password: "" });
+  let [showPassword, setShowPassword] = useState(false);
   // Validation rules
   const validations = [
     { field: data.email, message: "Email is required!" },
@@ -111,20 +113,19 @@ const Login = () => {
                     <input
                       onChange={(e) => setData({ ...data, password: e.target.value })}
                       required
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       className="common-input common-input--bg common-input--withIcon"
                       id="your-password"
                       placeholder="6+ characters, 1 Capital letter"
                     />
-                    <span
-                      className="input-icon toggle-password cursor-pointer"
-                      id="#your-password"
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="input-icon toggle-password cursor-pointer border-0 bg-transparent p-0"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                     >
-                      <img
-                        src="/super-admin/assets/images/icons/lock-icon.svg"
-                        alt=""
-                      />
-                    </span>
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
                   </div>
                 </div>
 
