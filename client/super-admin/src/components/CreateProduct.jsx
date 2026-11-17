@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { formats, modules } from "../helper/helper";
 import ImagePicker from "./ImagePicker";
 import brandStore from "../store/brandStore";
+import categoryStore from "../store/categoryStore";
 
 const CreateProduct = () => {
   // Selected image filenames, e.g. ["api-img-1-a.png", "api-img-2-b.jpg"]
@@ -15,6 +16,15 @@ const CreateProduct = () => {
   useEffect(() => {
     brandListRequest();
   }, [brandListRequest]);
+
+  // Selected category's _id ("" = none selected)
+  const [category_id, setCategoryId] = useState("");
+
+  // Categories for the dropdown come from the database (/category-list)
+  const { categoryList, categoryListLoading, categoryListRequest } = categoryStore();
+  useEffect(() => {
+    categoryListRequest();
+  }, [categoryListRequest]);
 
   return (
     <>
@@ -96,14 +106,24 @@ const CreateProduct = () => {
                               Category
                             </label>
                             <div className="select-has-icon">
-                              <select className="common-input border">
-                                <option value={""}>
-                                  Please Select A Category **
+                              <select
+                                value={category_id}
+                                onChange={(e) => setCategoryId(e.target.value)}
+                                disabled={categoryListLoading && !categoryList}
+                                className="common-input border"
+                              >
+                                <option value="">
+                                  {categoryListLoading && !categoryList
+                                    ? "Loading categories..."
+                                    : categoryList?.length === 0
+                                      ? "No categories found — create one first"
+                                      : "Please Select A Category **"}
                                 </option>
-                                <option>Laptop</option>
-                                <option>Baby</option>
-                                <option>Women</option>
-                                <option>Man</option>
+                                {categoryList?.map((category) => (
+                                  <option key={category._id} value={category._id}>
+                                    {category.category_name}
+                                  </option>
+                                ))}
                               </select>
                             </div>
                           </div>

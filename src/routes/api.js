@@ -44,6 +44,7 @@ router.delete('/delete-product/:id', authVerificationAdmin, productController.de
 // ===========For Category==========
 router.post('/create-category', authVerificationAdmin, categoryController.createCategory);
 router.get('/all-category/:per_page/:page_no', categoryController.allCategory);
+router.get('/category-list', categoryController.categoryList);
 router.get('/single-category/:id', categoryController.singleCategory);
 router.put('/update-category/:id', authVerificationAdmin, categoryController.updateCategory);
 router.delete('/delete-category/:id', authVerificationAdmin, categoryController.deleteCategory);

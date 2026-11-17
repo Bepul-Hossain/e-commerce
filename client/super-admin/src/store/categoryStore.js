@@ -24,7 +24,7 @@ const categoryStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            ErrorToast(error?.response?.data?.message || "Something went wrong.");
             set({ createCategoryLoading: false })
             return false
         }
@@ -45,7 +45,29 @@ const categoryStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            ErrorToast(error?.response?.data?.message || "Something went wrong.");
+            return false
+        }
+    },
+    // category list for dropdowns: [{ _id, category_name }], A-Z, no pagination
+    categoryList: null, // null = not loaded yet
+    categoryListLoading: false,
+    categoryListRequest: async () => {
+        try {
+            set({ categoryListLoading: true })
+            let res = await axios.get(baseURL + "/category-list", {
+                withCredentials: true,
+            })
+            if (res?.data?.success === true) {
+                set({ categoryList: res?.data?.data || [], categoryListLoading: false })
+                return true
+            }
+            set({ categoryListLoading: false })
+            return false
+        } catch (error) {
+            console.log(error);
+            set({ categoryListLoading: false })
+            ErrorToast(error?.response?.data?.message || "Could not load categories.");
             return false
         }
     },
@@ -63,7 +85,7 @@ const categoryStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            ErrorToast(error?.response?.data?.message || "Something went wrong.");
             return false
         }
     },
@@ -83,7 +105,7 @@ const categoryStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            ErrorToast(error?.response?.data?.message || "Something went wrong.");
             return false
         }
     },
@@ -103,7 +125,7 @@ const categoryStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            ErrorToast(error?.response?.data?.message || "Something went wrong.");
             return false
         }
     },

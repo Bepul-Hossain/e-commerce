@@ -1,7 +1,121 @@
+import { useEffect, useState } from "react";
 import { baseURLFile } from "../helper/config";
 import Paginate from "../helper/Paginate";
+import categoryStore from "../store/categoryStore";
+import { DeleteAlert, ErrorToast, IsEmpty } from "../helper/helper";
+import ImagePicker from "./ImagePicker";
+
+const PER_PAGE = 10;
+const EMPTY_CATEGORY = { category_name: "", category_img: "" };
+
+// category_img is a single filename from the File Manager
+const validate = (category) => {
+  if (IsEmpty(category.category_name.trim())) return "Category name is required!";
+  if (IsEmpty(category.category_img)) return "Category image is required!";
+  return null;
+};
+
+// ImagePicker works with arrays; category_img is one filename
+const toPickerValue = (category_img) => (category_img ? [category_img] : []);
+const fromPickerValue = (arr) => arr[0] || "";
 
 const Category = () => {
+  let {
+    createCategoryLoading,
+    createCategoryRequest,
+    allCategoryRequest,
+    allCategory,
+    totalCategory,
+    deleteCategoryRequest,
+    updateCategoryRequest,
+    singleCategoryRequest,
+  } = categoryStore();
+
+  const [page_no, setPageNo] = useState(1);
+
+  // Create form and edit modal have separate state, so opening "Edit"
+  // doesn't overwrite what's typed in the create form
+  const [createData, setCreateData] = useState(EMPTY_CATEGORY);
+  const [editData, setEditData] = useState(EMPTY_CATEGORY);
+  const [editId, setEditId] = useState(null); // null = modal closed
+  const [updating, setUpdating] = useState(false);
+
+  const loadCategories = (page = page_no) => allCategoryRequest(PER_PAGE, page);
+
+  useEffect(() => {
+    loadCategories(page_no);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page_no]);
+
+  // create category
+  const categorySubmit = async () => {
+    const error = validate(createData);
+    if (error) return ErrorToast(error);
+
+    const res = await createCategoryRequest({
+      category_name: createData.category_name.trim(),
+      category_img: createData.category_img,
+    });
+    if (res) {
+      setCreateData(EMPTY_CATEGORY);
+      // Newest categories come first, so show page 1
+      if (page_no === 1) await loadCategories(1);
+      else setPageNo(1);
+    }
+  };
+
+  // delete category (DeleteAlert confirms, then calls the API once)
+  const deleteCategory = async (id) => {
+    const res = await DeleteAlert(deleteCategoryRequest, id);
+    if (res) {
+      // If that was the last category on this page, go back one page
+      if (allCategory?.length === 1 && page_no > 1) setPageNo(page_no - 1);
+      else await loadCategories();
+    }
+  };
+
+  // open edit modal with the category's current data
+  const openEdit = async (id) => {
+    const res = await singleCategoryRequest(id);
+    if (res) {
+      setEditData({
+        category_name: res.category_name || "",
+        category_img: res.category_img || "",
+      });
+      setEditId(res._id);
+    }
+  };
+
+  const closeEdit = () => {
+    setEditId(null);
+    setEditData(EMPTY_CATEGORY);
+  };
+
+  // update category; the modal only closes on success
+  const updateCategory = async () => {
+    const error = validate(editData);
+    if (error) return ErrorToast(error);
+
+    setUpdating(true);
+    const res = await updateCategoryRequest(editId, {
+      category_name: editData.category_name.trim(),
+      category_img: editData.category_img,
+    });
+    setUpdating(false);
+    if (res) {
+      closeEdit();
+      await loadCategories();
+    }
+  };
+
+  // Close the modal with Escape
+  useEffect(() => {
+    if (!editId) return;
+    const onKey = (e) => e.key === "Escape" && closeEdit();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [editId]);
+
   return (
     <>
       {/* Cover Photo Start */}
@@ -19,36 +133,38 @@ const Category = () => {
             <div className="col-12 ">
               <div className="dashboard-card">
                 <div className="profile-info-content">
-                  <div className="tab-content" id="pills-tabContent">
-                    <div className="tab-pane fade show active">
-                      <div>
-                        <div className="row gy-4">
-                          <div className="col-md-6">
-                            <label className="form-label mb-2 font-18 font-heading fw-600">
-                              Category name
-                            </label>
-                            <input
-                              type="text"
-                              className="common-input border"
-                            />
-                          </div>
-                          <div className="col-md-6">
-                            <label className="form-label mb-2 font-18 font-heading fw-600">
-                              Image Single
-                            </label>
-                            <input
-                              type="text"
-                              className="common-input border"
-                            />
-                          </div>
+                  <div className="row gy-4">
+                    <div className="col-12">
+                      <label className="form-label mb-2 font-18 font-heading fw-600">
+                        Category name
+                      </label>
+                      <input
+                        value={createData.category_name}
+                        onChange={(e) => setCreateData({ ...createData, category_name: e.target.value })}
+                        type="text"
+                        className="common-input border"
+                        placeholder="Ex: Baby Collection"
+                      />
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label mb-2 font-18 font-heading fw-600">
+                        Category image (search and click to select one)
+                      </label>
+                      <ImagePicker
+                        multiple={false}
+                        value={toPickerValue(createData.category_img)}
+                        onChange={(arr) => setCreateData({ ...createData, category_img: fromPickerValue(arr) })}
+                      />
+                    </div>
 
-                          <div className="col-sm-12 text-end">
-                            <button className="btn btn-main btn-lg pill mt-4 ">
-                              Create Category
-                            </button>
-                          </div>
-                        </div>
-                      </div>
+                    <div className="col-sm-12 text-end">
+                      <button
+                        onClick={categorySubmit}
+                        disabled={createCategoryLoading}
+                        className="btn btn-main btn-lg pill mt-4 "
+                      >
+                        {createCategoryLoading ? "Creating..." : "Create Category"}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -63,50 +179,62 @@ const Category = () => {
                         <tr>
                           <th>Image</th>
                           <th>Category Name</th>
-                          <th>Action</th>
+                          <th>Products</th>
+                          <th className="text-end">Action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td>
-                            <div className="img-100">
-                              <img
-                                src={`https://placehold.co/60x60`}
-                                alt=""
-                              />
-                            </div>
-                          </td>
-                          <td>Baby Collection</td>
-                          <td>
-                            <div className="d-flex justify-content-end gap-2">
-                              <button
-                                className="btn btn-success"
-                                data-bs-toggle="modal"
-                                data-bs-target={`#exampleModal_${1}`}
-                              >
-                                Edit
-                              </button>
-                              <button
-                                className="btn btn-danger"
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
+                        {allCategory?.length === 0 && (
+                          <tr>
+                            <td colSpan={4} className="text-center text-muted">
+                              No categories yet
+                            </td>
+                          </tr>
+                        )}
+                        {allCategory?.map((item) => (
+                          <tr key={item._id}>
+                            <td>
+                              <div className="img-100">
+                                <img
+                                  src={`${baseURLFile}/${item.category_img}`}
+                                  alt={item.category_name}
+                                />
+                              </div>
+                            </td>
+                            <td>{item.category_name}</td>
+                            <td>{item.totalCount ?? 0}</td>
+                            <td>
+                              <div className="d-flex justify-content-end gap-2">
+                                <button
+                                  onClick={() => openEdit(item._id)}
+                                  className="btn btn-success"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => deleteCategory(item._id)}
+                                  className="btn btn-danger"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
-                    <div className="flx-between justify-content-end gap-2">
-                      <nav aria-label="Page navigation example">
-                        <div>
-                            <Paginate
-                              page_no={1}
-                              per_page={5}
-                              totalCount={10}
-                            />
-                        </div>
-                      </nav>
-                    </div>
+                    {totalCategory > PER_PAGE && (
+                      <div className="flx-between justify-content-end gap-2">
+                        <nav aria-label="Category pages">
+                          <Paginate
+                            handelPageClick={(e) => setPageNo(e.selected + 1)}
+                            page_no={page_no}
+                            per_page={PER_PAGE}
+                            totalCount={totalCategory}
+                          />
+                        </nav>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -116,82 +244,78 @@ const Category = () => {
         {/* Profile Content End */}
       </div>
 
-      {/* Category update section */}
-      <>
-        <div
-          className="modal fade"
-          id={`exampleModal_${1}`}
-          tabIndex={-1}
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h6 className="modal-title fs-5" id="exampleModalLabel">
-                  Update Category
-                </h6>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                />
-              </div>
-              <div className="modal-body">
-                <div className="dashboard-card">
-                  <div className="profile-info-content">
-                    <div className="tab-content" id="pills-tabContent">
-                      <div className="tab-pane fade show active">
-                        <div>
-                          <div className="row gy-4">
-                            <div className="col-md-6">
-                              <label className="form-label mb-2 font-18 font-heading fw-600">
-                                Category name
-                              </label>
-                              <input
-                                value="Baby Collection"
-                                type="text"
-                                className="common-input border"
-                              />
-                            </div>
-                            <div className="col-md-6">
-                              <label className="form-label mb-2 font-18 font-heading fw-600">
-                                Image Single
-                              </label>
-                              <input
-                                value="https://placehold.co/60x60"
-                                type="text"
-                                className="common-input border"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+      {/* Category update modal (React-controlled, closes only on success) */}
+      {editId && (
+        <>
+          <div
+            className="modal fade show d-block"
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="updateCategoryTitle"
+            onClick={(e) => e.target === e.currentTarget && closeEdit()}
+          >
+            <div className="modal-dialog modal-lg modal-dialog-scrollable">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h6 className="modal-title fs-5" id="updateCategoryTitle">
+                    Update Category
+                  </h6>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    onClick={closeEdit}
+                    aria-label="Close"
+                  />
+                </div>
+                <div className="modal-body">
+                  <div className="row gy-4">
+                    <div className="col-12">
+                      <label className="form-label mb-2 font-18 font-heading fw-600">
+                        Category name
+                      </label>
+                      <input
+                        onChange={(e) => setEditData({ ...editData, category_name: e.target.value })}
+                        value={editData.category_name}
+                        type="text"
+                        className="common-input border"
+                      />
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label mb-2 font-18 font-heading fw-600">
+                        Category image
+                      </label>
+                      <ImagePicker
+                        multiple={false}
+                        value={toPickerValue(editData.category_img)}
+                        onChange={(arr) => setEditData({ ...editData, category_img: fromPickerValue(arr) })}
+                      />
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  data-bs-dismiss="modal"
-                >
-                  Update Category
-                </button>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={closeEdit}
+                  >
+                    Close
+                  </button>
+                  <button
+                    onClick={updateCategory}
+                    disabled={updating}
+                    type="button"
+                    className="btn btn-primary"
+                  >
+                    {updating ? "Updating..." : "Update Category"}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </>
+          <div className="modal-backdrop fade show" />
+        </>
+      )}
     </>
   );
 };
