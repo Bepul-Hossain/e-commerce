@@ -37,9 +37,10 @@ const fileStore = create((set) => ({
     // all file
     totalFile: null,
     allFile: null,
-    allFileRequest: async (per_page, page_no) => {
+    allFileRequest: async (per_page, page_no, keyword = "") => {
         try {
             let res = await axios.get(baseURL + `/all-file/${per_page}/${page_no}`, {
+                params: keyword ? { keyword } : {},
                 withCredentials: true,
                 credentials: "include",
             })

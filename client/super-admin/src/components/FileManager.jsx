@@ -53,18 +53,43 @@ const FileManager = () => {
 
   const per_page = 12;
   const page_no = searchParams.get("page_no") || 1;
+  // Search keyword lives in the URL (?keyword=) so it survives refresh/paging
+  const keyword = searchParams.get("keyword") || "";
+  // What's typed in the box; pushed to the URL after a short pause
+  const [searchText, setSearchText] = useState(keyword);
 
+  const goTo = (page, kw) => {
+    const params = new URLSearchParams();
+    if (kw) params.set("keyword", kw);
+    params.set("page_no", page);
+    navigate(`/file-manager?${params.toString()}`);
+  };
+
+  // Keep the box in sync when the URL keyword changes from outside
+  // (browser Back/Forward, clicking the sidebar link)
+  useEffect(() => {
+    setSearchText((prev) => (prev.trim() === keyword ? prev : keyword));
+  }, [keyword]);
+
+  // Debounce: search 400ms after the user stops typing, starting from page 1
+  useEffect(() => {
+    const kw = searchText.trim();
+    if (kw === keyword) return;
+    const timer = setTimeout(() => goTo(1, kw), 400);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchText, keyword]);
+
+  // Fetch whenever page or keyword in the URL changes
   useEffect(() => {
     (async () => {
-      await allFileRequest(per_page, page_no);
+      await allFileRequest(per_page, page_no, keyword);
     })()
-  }, [allFileRequest, page_no]);
+  }, [allFileRequest, page_no, keyword]);
 
   // pagination function
-  const handelPageClick = async (event) => {
-    let page_no = event.selected + 1;
-    await allFileRequest(per_page, page_no);
-    navigate(`/file-manager?page_no=${page_no}`);
+  const handelPageClick = (event) => {
+    goTo(event.selected + 1, keyword);
   };
 
   const handleUpload = async () => {
@@ -78,13 +103,13 @@ const FileManager = () => {
     }
     const ok = await fileUploadRequest(file);
     if (ok) clearFile();
-    await allFileRequest(per_page, page_no);
+    await allFileRequest(per_page, page_no, keyword);
   };
 
   let deleteFile = async (_id, filename)=>{
     let res = await DeleteAlertFile(fileRemoveRequest, _id, filename);
     if(res){
-      await allFileRequest(per_page, page_no);
+      await allFileRequest(per_page, page_no, keyword);
     }
   }
 
@@ -184,11 +209,47 @@ const FileManager = () => {
             <div className="col-12">
               <div className="dashboard-card">
                 <div className=" p-5">
-                  <h4 className="mb-3">Image Gallery</h4>
+                  <div className="row g-3 align-items-center mb-4">
+                    <div className="col-12 col-md-6">
+                      <h4 className="mb-0">Image Gallery</h4>
+                    </div>
+                    {/* Search by filename */}
+                    <div className="col-12 col-md-6">
+                      <div className="input-group">
+                        <input
+                          type="search"
+                          value={searchText}
+                          onChange={(e) => setSearchText(e.target.value)}
+                          onKeyDown={(e) => {
+                            // Enter: search immediately, skip the debounce wait
+                            if (e.key === "Enter") goTo(1, searchText.trim());
+                          }}
+                          className="form-control"
+                          placeholder="Search by filename..."
+                          aria-label="Search files by filename"
+                        />
+                        {searchText && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSearchText("");
+                              goTo(1, "");
+                            }}
+                            className="btn btn-outline-secondary"
+                            aria-label="Clear search"
+                          >
+                            &times;
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                   {
                     allFile?.length === 0 && (
                       <p className="text-muted text-center">
-                        No Images available
+                        {keyword
+                          ? `No files found matching "${keyword}"`
+                          : "No Images available"}
                       </p>
                     )
                   }
