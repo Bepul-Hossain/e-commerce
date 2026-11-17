@@ -51,6 +51,28 @@ const brandStore = create((set) => ({
             return false
         }
     },
+    // brand list for dropdowns: [{ _id, brand_name }], A-Z, no pagination
+    brandList: null, // null = not loaded yet
+    brandListLoading: false,
+    brandListRequest: async () => {
+        try {
+            set({ brandListLoading: true })
+            let res = await axios.get(baseURL + "/brand-list", {
+                withCredentials: true,
+            })
+            if (res?.data?.success === true) {
+                set({ brandList: res?.data?.data || [], brandListLoading: false })
+                return true
+            }
+            set({ brandListLoading: false })
+            return false
+        } catch (error) {
+            console.log(error);
+            set({ brandListLoading: false })
+            ErrorToast(error?.response?.data?.message || "Could not load brands.");
+            return false
+        }
+    },
     // single brand
     singleBrand: null,
     singleBrandRequest: async (id) => {

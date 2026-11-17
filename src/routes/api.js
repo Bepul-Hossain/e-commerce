@@ -51,6 +51,7 @@ router.delete('/delete-category/:id', authVerificationAdmin, categoryController.
 // ===========For Brand==========
 router.post('/create-brand', authVerificationAdmin, brandController.createBrand);
 router.get('/all-brand/:per_page/:page_no', brandController.allBrand);
+router.get('/brand-list', brandController.brandList);
 router.get('/single-brand/:id', brandController.singleBrand);
 router.put('/update-brand/:id', authVerificationAdmin, brandController.updateBrand);
 router.delete('/delete-brand/:id', authVerificationAdmin, brandController.deleteBrand);

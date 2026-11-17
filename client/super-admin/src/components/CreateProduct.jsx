@@ -1,11 +1,20 @@
 import ReactQuill from "react-quill-new";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formats, modules } from "../helper/helper";
 import ImagePicker from "./ImagePicker";
+import brandStore from "../store/brandStore";
 
 const CreateProduct = () => {
   // Selected image filenames, e.g. ["api-img-1-a.png", "api-img-2-b.jpg"]
   const [images, setImages] = useState([]);
+  // Selected brand's _id ("" = none selected)
+  const [brand_id, setBrandId] = useState("");
+
+  // Brands for the dropdown come from the database (/brand-list)
+  const { brandList, brandListLoading, brandListRequest } = brandStore();
+  useEffect(() => {
+    brandListRequest();
+  }, [brandListRequest]);
 
   return (
     <>
@@ -103,14 +112,24 @@ const CreateProduct = () => {
                               Brand
                             </label>
                             <div className="select-has-icon">
-                              <select className="common-input border">
-                                <option value={""}>
-                                  Please Select A Brand **
+                              <select
+                                value={brand_id}
+                                onChange={(e) => setBrandId(e.target.value)}
+                                disabled={brandListLoading && !brandList}
+                                className="common-input border"
+                              >
+                                <option value="">
+                                  {brandListLoading && !brandList
+                                    ? "Loading brands..."
+                                    : brandList?.length === 0
+                                      ? "No brands found — create one first"
+                                      : "Please Select A Brand **"}
                                 </option>
-                                <option>HP</option>
-                                <option>Walton</option>
-                                <option>LG</option>
-                                <option>Apple</option>
+                                {brandList?.map((brand) => (
+                                  <option key={brand._id} value={brand._id}>
+                                    {brand.brand_name}
+                                  </option>
+                                ))}
                               </select>
                             </div>
                           </div>

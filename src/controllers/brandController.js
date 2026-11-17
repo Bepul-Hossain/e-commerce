@@ -108,6 +108,25 @@ exports.allBrand = async (req, res) => {
     }
 }
 
+// All brands, without pagination, for dropdowns (e.g. Create Product).
+// Returns only _id and brand_name, sorted A-Z.
+exports.brandList = async (req, res) => {
+    try {
+        let data = await brandModel
+            .find({}, { brand_name: 1 })
+            .sort({ brand_name: 1 })
+            .collation({ locale: "en", strength: 2 }) // case-insensitive A-Z
+            .lean();
+        res.status(200).json({
+            success: true,
+            message: "Brand list retrieved successfully.",
+            data,
+        });
+    } catch (error) {
+        serverError(res, error);
+    }
+}
+
 exports.singleBrand = async (req, res) => {
     try {
         let { id } = req.params;
