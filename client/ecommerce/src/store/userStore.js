@@ -71,7 +71,10 @@ const userStore = create((set) => ({
             }
         } catch (error) {
             console.log(error);
-            ErrorToast("Something went wrong.");
+            // 401 just means "not logged in" — not an error worth showing
+            if (error?.response?.status !== 401) {
+                ErrorToast("Something went wrong.");
+            }
             return false
         }
     },
@@ -85,8 +88,13 @@ const userStore = create((set) => ({
             return true
         } catch (error) {
             console.log(error);
-            if (error?.status === 401) {
-                window.location.href = "/login";
+            if (error?.response?.status === 401) {
+                // replace(): don't leave the protected page in history (Back would loop)
+                window.location.replace(
+                    "/login?redirect=" +
+                    encodeURIComponent(window.location.pathname + window.location.search)
+                );
+                return false
             }
             ErrorToast("Something went wrong.");
             return false

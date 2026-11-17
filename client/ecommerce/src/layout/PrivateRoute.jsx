@@ -1,23 +1,26 @@
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { getToken } from "../helper/helper";
 import userStore from "../store/userStore";
 const PrivateRoute = ({ children }) => {
   const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(true); // Add loading state
+  const location = useLocation();
 
   let { userVerifyRequest, userRequest } = userStore();
   useEffect(() => {
     (async () => {
       try {
-        await userVerifyRequest();
-        await userRequest()
-        let result = getToken();
-        if (result) {
-          setIsLogin(true);
-        } else {
+        // No cookie: go straight to /login without hitting the API
+        if (!getToken()) {
           setIsLogin(false);
+          return;
         }
+        const verified = await userVerifyRequest();
+        if (verified) {
+          await userRequest();
+        }
+        setIsLogin(verified);
       } catch (error) {
         console.log(error);
 
@@ -32,7 +35,18 @@ const PrivateRoute = ({ children }) => {
     return <></>;
   }
 
-  return isLogin ? children : <Navigate to='/login' />;
+  // replace: the protected URL is swapped for /login instead of stacking on it,
+  // so Back goes to the page before it (no redirect loop). `from` lets Login
+  // send the user back here after signing in.
+  return isLogin ? (
+    children
+  ) : (
+    <Navigate
+      to="/login"
+      replace
+      state={{ from: location.pathname + location.search }}
+    />
+  );
 };
 
 export default PrivateRoute;

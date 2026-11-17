@@ -4,6 +4,7 @@ import { Link, NavLink } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 import cartStore from "../store/cartStore";
 import userStore from "../store/userStore";
+import { getToken } from "../helper/helper";
 
 const HeaderOne = () => {
   const [active, setActive] = useState(false);
@@ -55,6 +56,8 @@ const HeaderOne = () => {
   let { user, userRequest } = userStore();
 
   useEffect(() => {
+    // Guests have no auth cookie: skip the protected calls so they don't 401
+    if (!getToken()) return;
     (async () => {
       await allCartRequest();
       await userRequest();

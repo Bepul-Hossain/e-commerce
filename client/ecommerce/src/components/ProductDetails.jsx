@@ -69,7 +69,9 @@ const ProductDetails = () => {
     let res = await createCartRequest(submitData);
     await singleProductRequest(product_id);
     if (res === 401) {
-      navigate("/login");
+      navigate("/login", {
+        state: { from: window.location.pathname + window.location.search },
+      });
     }
     await allCartRequest();
   }

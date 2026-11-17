@@ -58,7 +58,11 @@ class FormHelper {
     if (code === 401) {
       sessionStorage.clear();
       localStorage.clear();
-      window.location.href = "/login";
+      // replace(): don't leave the protected page in history (Back would loop)
+      window.location.replace(
+        "/login?redirect=" +
+          encodeURIComponent(window.location.pathname + window.location.search)
+      );
     }
   }
 

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 import userStore from "../store/userStore";
 import { ErrorToast, IsEmpty } from "../helper/helper";
@@ -7,6 +7,14 @@ import { useState } from "react";
 const Login = () => {
   let { userLoginLoading, userLoginRequest } = userStore();
   let navigate = useNavigate();
+  let location = useLocation();
+  let [searchParams] = useSearchParams();
+  // Page the user was sent here from: router state (in-app redirects) or
+  // ?redirect= (full-page redirects). Only allow same-site paths.
+  let from = location.state?.from || searchParams.get("redirect");
+  if (!from || !from.startsWith("/") || from.startsWith("//") || from.startsWith("/login")) {
+    from = "/dashboard-profile";
+  }
   let [data, setData] = useState({ email: "", password: "" });
   // validation rules
   const validations = [
@@ -21,7 +29,8 @@ const Login = () => {
     }
     let res = await userLoginRequest(data);
     if (res) {
-      navigate("/dashboard-profile", { replace: true });
+      // replace: so Back from the returned page doesn't land on /login again
+      navigate(from, { replace: true });
     }
   };
   return (
