@@ -75,10 +75,10 @@ const Contact = () => {
                     Give Us An Email
                   </span>
                   <Link
-                    to='tel:info@pixbo.com'
+                    to='mailto:info@ponnolagbe.com'
                     className='contact-info__link font-24 fw-500 text-heading hover-text-main'
                   >
-                    info@pixbo.com
+                    info@ponnolagbe.com
                   </Link>
                 </div>
               </div>

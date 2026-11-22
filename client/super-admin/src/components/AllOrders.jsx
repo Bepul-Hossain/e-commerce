@@ -255,9 +255,9 @@ const AllOrders = () => {
                               <small>Date: {formatDate(readSingleInvoiceSingleUser?.createdAt)}</small>
                             </div>
                             <div className="col-sm-6 text-end">
-                              <h5 className="fw-bold">PixBO</h5>
+                              <h5 className="fw-bold">Ponno Lagbe</h5>
                               <p className="mb-0">123 Street, Chittagong</p>
-                              <p className="mb-0">support@pixbo.com</p>
+                              <p className="mb-0">support@ponnolagbe.com</p>
                               <p className="mb-0">+880 1234 567 890</p>
                             </div>
                           </div>
