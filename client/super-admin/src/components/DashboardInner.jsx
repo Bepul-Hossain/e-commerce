@@ -16,7 +16,7 @@ const DashboardInner = () => {
           <div className="card user-card shadow-sm border-0 p-3">
             <div className="card-body text-center">
               <h6 className="text-secondary mb-2">Total Users</h6>
-              <h2 className="number fw-bold mb-1">{dashboard?.totalUsers}</h2>
+              <h4 className="number fw-bold mb-1">{dashboard?.totalUsers}</h4>
             </div>
           </div>
         </div>
@@ -24,9 +24,9 @@ const DashboardInner = () => {
           <div className="card user-card shadow-sm border-0 p-3">
             <div className="card-body text-center">
               <h6 className="text-secondary mb-2">Total Products</h6>
-              <h2 className="number fw-bold mb-1">
+              <h4 className="number fw-bold mb-1">
                 {dashboard?.totalProducts}
-              </h2>
+              </h4>
             </div>
           </div>
         </div>
@@ -34,9 +34,9 @@ const DashboardInner = () => {
           <div className="card user-card shadow-sm border-0 p-3">
             <div className="card-body text-center">
               <h6 className="text-secondary mb-2">Total Categories</h6>
-              <h2 className="number fw-bold mb-1">
+              <h4 className="number fw-bold mb-1">
                 {dashboard?.totalCategories}
-              </h2>
+              </h4>
             </div>
           </div>
         </div>
@@ -44,7 +44,7 @@ const DashboardInner = () => {
           <div className="card user-card shadow-sm border-0 p-3">
             <div className="card-body text-center">
               <h6 className="text-secondary mb-2">Total Brands</h6>
-              <h2 className="number fw-bold mb-1">{dashboard?.totalBrands}</h2>
+              <h4 className="number fw-bold mb-1">{dashboard?.totalBrands}</h4>
             </div>
           </div>
         </div>
@@ -52,7 +52,7 @@ const DashboardInner = () => {
           <div className="card user-card shadow-sm border-0 p-3">
             <div className="card-body text-center">
               <h6 className="text-secondary mb-2">Total Orders</h6>
-              <h2 className="number fw-bold mb-1">{dashboard?.totalOrders}</h2>
+              <h4 className="number fw-bold mb-1">{dashboard?.totalOrders}</h4>
             </div>
           </div>
         </div>
@@ -60,7 +60,7 @@ const DashboardInner = () => {
           <div className="card user-card shadow-sm border-0 p-3">
             <div className="card-body text-center">
               <h6 className="text-secondary mb-2">Total Income</h6>
-              <h2 className="number fw-bold mb-1">{dashboard?.totalIncome}</h2>
+              <h4 className="number fw-bold mb-1">{dashboard?.totalIncome}</h4>
             </div>
           </div>
         </div>
@@ -68,9 +68,9 @@ const DashboardInner = () => {
           <div className="card user-card shadow-sm border-0 p-3">
             <div className="card-body text-center">
               <h6 className="text-secondary mb-2">Total Pending Deliver</h6>
-              <h2 className="number fw-bold mb-1">
+              <h4 className="number fw-bold mb-1">
                 {dashboard?.totalPendingDeliver}
-              </h2>
+              </h4>
             </div>
           </div>
         </div>
@@ -78,9 +78,9 @@ const DashboardInner = () => {
           <div className="card user-card shadow-sm border-0 p-3">
             <div className="card-body text-center">
               <h6 className="text-secondary mb-2">Total Delivered Orders</h6>
-              <h2 className="number fw-bold mb-1">
+              <h4 className="number fw-bold mb-1">
                 {dashboard?.totalDeliveredOrders}
-              </h2>
+              </h4>
             </div>
           </div>
         </div>
@@ -88,9 +88,9 @@ const DashboardInner = () => {
           <div className="card user-card shadow-sm border-0 p-3">
             <div className="card-body text-center">
               <h6 className="text-secondary mb-2">Total canceled Orders</h6>
-              <h2 className="number fw-bold mb-1">
+              <h4 className="number fw-bold mb-1">
                 {dashboard?.totalCanceledOrders}
-              </h2>
+              </h4>
             </div>
           </div>
         </div>
@@ -98,7 +98,7 @@ const DashboardInner = () => {
           <div className="card user-card shadow-sm border-0 p-3">
             <div className="card-body text-center">
               <h6 className="text-secondary mb-2">Total Reviews</h6>
-              <h2 className="number fw-bold mb-1">{dashboard?.totalReviews}</h2>
+              <h4 className="number fw-bold mb-1">{dashboard?.totalReviews}</h4>
             </div>
           </div>
         </div>

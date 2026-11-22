@@ -43,7 +43,7 @@ exports.dashboadSummary = async (req, res) => {
             }
         ]);
 
-        const totalIncome = totalIncomeAgg.length > 0 ? totalIncomeAgg[0].total : 0;
+        const totalIncome = totalIncomeAgg.length > 0 ? (totalIncomeAgg[0].total).toFixed(2) : 0;
 
         res.status(200).json({
             success: true,
