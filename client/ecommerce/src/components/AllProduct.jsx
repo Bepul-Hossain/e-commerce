@@ -16,6 +16,8 @@ const AllProduct = () => {
   const [openSection, setOpenSection] = useState({ category: true, brand: true });
   const toggleSection = (key) =>
     setOpenSection((prev) => ({ ...prev, [key]: !prev[key] }));
+  // Small screens: the filter sidebar slides in from the left
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const category_id = searchParams.get("category_id") || 0;
   const brand_id = searchParams.get("brand_id") || 0;
@@ -76,11 +78,13 @@ const AllProduct = () => {
 
   // category function
   const handleCategoryClick = async (category_id) => {
+    setSidebarOpen(false);
     navigate(`/all-products?category_id=${category_id}&brand_id=${0}&remark=${0}&keyword=${0}&per_page=${per_page}&page_no=1`);
     await allProductsRequest(category_id, 0, 0, 0, per_page, 1);
   }
   // brand function
   const handleBrandClick = async (brand_id) => {
+    setSidebarOpen(false);
     navigate(`/all-products?category_id=${0}&brand_id=${brand_id}&remark=${0}&keyword=${0}&per_page=${per_page}&page_no=1`);
     await allProductsRequest(0, brand_id, 0, 0, per_page, 1);
   }
@@ -147,7 +151,19 @@ const AllProduct = () => {
           <div className="row">
             <div className="col-lg-12">
               <div className="filter-tab gap-3 flx-between">
-                <div className="gap-3 flx-between">
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setSidebarOpen(true)}
+                    aria-label="Show filters"
+                    className="list-grid__button sidebar-btn text-body d-lg-none d-flex"
+                  >
+                    <i className="las la-bars" />
+                  </button>
+                </div>
+
+                {/* order-last: the theme moves .list-grid first on small screens */}
+                <div className="list-grid order-last d-flex align-items-center gap-2">
                   <button
                     onClick={handleResetClick}
                     type="button"
@@ -158,9 +174,6 @@ const AllProduct = () => {
                     </span>
                     <span className="font-18 fw-500">Reset</span>
                   </button>
-                </div>
-
-                <div className="list-grid d-flex align-items-center gap-2">
                   <button
                     className={`list-grid__button list-button d-sm-flex d-none text-body
                     ${activeButton === "list-view" ? "active" : ""}`}
@@ -175,17 +188,20 @@ const AllProduct = () => {
                   >
                     <i className="las la-border-all" />
                   </button>
-                  <button className="list-grid__button sidebar-btn text-body d-lg-none d-flex">
-                    <i className="las la-bars" />
-                  </button>
                 </div>
               </div>
             </div>
             <div className="col-xl-3 col-lg-4">
               {/* ===================== Filter Sidebar Start ============================= */}
-              <div className={`filter-sidebar`}>
+              <div
+                className={`side-overlay ${sidebarOpen ? "show" : ""}`}
+                onClick={() => setSidebarOpen(false)}
+              />
+              <div className={`filter-sidebar ${sidebarOpen ? "show" : ""}`}>
                 <button
                   type="button"
+                  onClick={() => setSidebarOpen(false)}
+                  aria-label="Close filters"
                   className="filter-sidebar__close p-2 position-absolute end-0 top-0 z-index-1 text-body hover-text-main font-20 d-lg-none d-block"
                 >
                   <i className="las la-times" />
