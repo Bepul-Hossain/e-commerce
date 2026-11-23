@@ -64,10 +64,10 @@ const Contact = () => {
                     Give Us A Call
                   </span>
                   <Link
-                    to='tel:01812345678'
+                    to='tel:01701063964'
                     className='contact-info__link font-24 fw-500 text-heading hover-text-main'
                   >
-                    01812345678
+                    01701063964
                   </Link>
                 </div>
                 <div className='contact-info__item'>

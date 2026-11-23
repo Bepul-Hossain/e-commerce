@@ -258,7 +258,7 @@ const AllOrders = () => {
                               <h5 className="fw-bold">Ponno Lagbe</h5>
                               <p className="mb-0">123 Street, Chittagong</p>
                               <p className="mb-0">support@ponnolagbe.com</p>
-                              <p className="mb-0">+880 1234 567 890</p>
+                              <p className="mb-0">01701063964</p>
                             </div>
                           </div>
 
