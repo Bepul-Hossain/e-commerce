@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import productStore from "../store/productStore";
 import { useEffect } from "react";
-import { baseURL } from "../helper/config";
+import { baseURLFile } from "../helper/config";
 
 const ArrivalOne = () => {
   let {allNewArrivalProducts, newArrivalProductsRequest} = productStore();
@@ -40,7 +40,7 @@ const ArrivalOne = () => {
                     className="link w-100"
                   >
                     <img
-                      src={`${baseURL}/${item?.images[0]}`}
+                      src={`${baseURLFile}/${item?.images[0]}`}
                       alt=""
                       className="cover-img"
                     />
