@@ -7210,6 +7210,11 @@ input[type="number"] {
   transform: rotate(180deg);
 }
 
+/* closed sidebar section: arrow points right */
+.filter-sidebar__button.collapsed::after {
+  transform: rotate(-90deg);
+}
+
 .filter-sidebar__button::before {
   position: absolute;
   content: "";

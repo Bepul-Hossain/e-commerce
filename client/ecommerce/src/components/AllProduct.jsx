@@ -12,6 +12,10 @@ const AllProduct = () => {
   const navigate = useNavigate();
   const [activeButton, setActiveButton] = useState("grid-view");
   const [search, setSearch] = useState("");
+  // Sidebar sections: true = list shown. Both start open.
+  const [openSection, setOpenSection] = useState({ category: true, brand: true });
+  const toggleSection = (key) =>
+    setOpenSection((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const category_id = searchParams.get("category_id") || 0;
   const brand_id = searchParams.get("brand_id") || 0;
@@ -192,11 +196,13 @@ const AllProduct = () => {
                   <div>
                     <button
                       type="button"
-                      className="filter-sidebar__button font-16 text-capitalize fw-500"
+                      onClick={() => toggleSection("category")}
+                      aria-expanded={openSection.category}
+                      className={`filter-sidebar__button font-16 text-capitalize fw-500 ${openSection.category ? "" : "collapsed"}`}
                     >
                       Category
                     </button>
-                    <div className="filter-sidebar__content">
+                    <div className={`filter-sidebar__content ${openSection.category ? "" : "d-none"}`}>
                       <ul className="filter-sidebar-list">
                         {
                           allCategory?.map((item, index) => (
@@ -213,11 +219,13 @@ const AllProduct = () => {
                   <div className="mt-5">
                     <button
                       type="button"
-                      className="filter-sidebar__button font-16 text-capitalize fw-500"
+                      onClick={() => toggleSection("brand")}
+                      aria-expanded={openSection.brand}
+                      className={`filter-sidebar__button font-16 text-capitalize fw-500 ${openSection.brand ? "" : "collapsed"}`}
                     >
                       Brands
                     </button>
-                    <div className="filter-sidebar__content">
+                    <div className={`filter-sidebar__content ${openSection.brand ? "" : "d-none"}`}>
                       <ul className="filter-sidebar-list">
                         {
                           allBrand?.map((item, index) => (
