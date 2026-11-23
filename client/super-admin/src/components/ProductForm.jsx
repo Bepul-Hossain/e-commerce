@@ -63,6 +63,7 @@ const ProductForm = ({
           value={data.title}
           onChange={onInput("title")}
           type="text"
+          placeholder="Ex: Premium Cotton Panjabi"
           className="common-input border"
         />
       </div>
@@ -74,6 +75,7 @@ const ProductForm = ({
           value={data.short_description}
           onChange={onInput("short_description")}
           type="text"
+          placeholder="One line summary shown on product cards"
           className="common-input border"
         />
       </div>
@@ -89,6 +91,7 @@ const ProductForm = ({
           value={data.price}
           onChange={onInput("price")}
           type="number"
+          placeholder="Ex: 1500"
           min="0"
           step="any"
           className="common-input border"
@@ -123,7 +126,7 @@ const ProductForm = ({
           value={data.discount_price}
           onChange={onInput("discount_price")}
           disabled={!data.is_discount}
-          placeholder={data.is_discount ? "" : "Turn on discount first"}
+          placeholder={data.is_discount ? "Ex: 1200 (less than price)" : "Turn on discount first"}
           type="number"
           min="0"
           step="any"
@@ -181,12 +184,13 @@ const ProductForm = ({
       </div>
       <div className="col-sm-4 col-xs-4">
         <label className="form-label mb-2 font-18 font-heading fw-600">
-          Remark (Ex: New)
+          Remark
         </label>
         <input
           value={data.remark}
           onChange={onInput("remark")}
           type="text"
+          placeholder="Ex: New, Popular, Trending"
           className="common-input border"
         />
       </div>
@@ -196,6 +200,7 @@ const ProductForm = ({
           value={data.stock}
           onChange={onInput("stock")}
           type="number"
+          placeholder="Ex: 50"
           min="0"
           step="1"
           className="common-input border"
@@ -229,6 +234,7 @@ const ProductForm = ({
           formats={formats}
           value={data.description}
           onChange={set("description")}
+          placeholder="Full product details: fabric, fit, care instructions..."
         />
       </div>
 

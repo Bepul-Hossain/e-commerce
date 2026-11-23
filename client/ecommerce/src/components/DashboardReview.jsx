@@ -214,7 +214,7 @@ const DashboardReview = () => {
                                           ...data,
                                           des: e.target.value
                                         })
-                                      }} className="common-input border"></textarea>
+                                      }} className="common-input border" placeholder="Share your experience with this product"></textarea>
                                   </div>
                                   <div className="col-12">
                                     <label className="form-label mb-2 font-18 font-heading fw-600">

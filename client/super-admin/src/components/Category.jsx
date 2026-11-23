@@ -279,6 +279,7 @@ const Category = () => {
                         value={editData.category_name}
                         type="text"
                         className="common-input border"
+                        placeholder="Ex: Baby Collection"
                       />
                     </div>
                     <div className="col-12">

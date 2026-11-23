@@ -63,6 +63,7 @@ const ProfileInner = () => {
                                 onChange={(e) => setData({ ...data, email: e.target.value })}
                                 value={data.email}
                                 type="email"
+                                placeholder="infoname@mail.com"
                                 className="common-input common-input--withIcon common-input--withLeftIcon "
                               />
                               <span className="input-icon input-icon--left">
@@ -86,6 +87,7 @@ const ProfileInner = () => {
                                 type="password"
                                 className="common-input common-input--withIcon common-input--withLeftIcon "
                                 id="new-password"
+                                placeholder="6+ characters, 1 Capital letter"
                               />
                             </div>
                           </div>
