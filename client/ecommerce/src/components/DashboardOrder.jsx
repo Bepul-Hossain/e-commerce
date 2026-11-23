@@ -230,7 +230,7 @@ const DashboardOrder = () => {
                             <div className="col-sm-6 text-end">
                               <h5 className="fw-bold">Apna</h5>
                               <p className="mb-0">123 Street, Chittagong</p>
-                              <p className="mb-0">support@ponnolagbe.com</p>
+                              <p className="mb-0">support@apna.com</p>
                               <p className="mb-0">01701063964</p>
                             </div>
                           </div>
