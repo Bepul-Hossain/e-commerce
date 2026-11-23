@@ -1,8 +1,15 @@
 import ReactQuill from "react-quill-new";
 import { useEffect, useState } from "react";
 import { ErrorToast, formats, modules } from "../helper/helper";
-import { EMPTY_PRODUCT, toPayload, validate } from "../helper/productForm";
+import {
+  COLOR_OPTIONS,
+  EMPTY_PRODUCT,
+  SIZE_OPTIONS,
+  toPayload,
+  validate,
+} from "../helper/productForm";
 import ImagePicker from "./ImagePicker";
+import MultiSelectDropdown from "./MultiSelectDropdown";
 import brandStore from "../store/brandStore";
 import categoryStore from "../store/categoryStore";
 
@@ -195,25 +202,22 @@ const ProductForm = ({
         />
       </div>
       <div className="col-sm-4 col-xs-4">
-        <label className="form-label mb-2 font-18 font-heading fw-600">
-          Color (Ex: Red, Green, Blue)
-        </label>
-        <input
+        <label className="form-label mb-2 font-18 font-heading fw-600">Color</label>
+        <MultiSelectDropdown
+          options={COLOR_OPTIONS}
           value={data.color}
-          onChange={onInput("color")}
-          type="text"
-          className="common-input border"
+          onChange={set("color")}
+          placeholder="Select colors"
+          swatch
         />
       </div>
       <div className="col-sm-4 col-xs-4">
-        <label className="form-label mb-2 font-18 font-heading fw-600">
-          Size (Ex: XXL, XL, X)
-        </label>
-        <input
+        <label className="form-label mb-2 font-18 font-heading fw-600">Size</label>
+        <MultiSelectDropdown
+          options={SIZE_OPTIONS}
           value={data.size}
-          onChange={onInput("size")}
-          type="text"
-          className="common-input border"
+          onChange={set("size")}
+          placeholder="Select sizes"
         />
       </div>
 

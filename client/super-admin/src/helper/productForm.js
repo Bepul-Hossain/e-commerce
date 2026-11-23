@@ -1,5 +1,22 @@
 // Shared product form helpers (Create Product + Edit modal)
 
+// Sizes offered in the product form's size dropdown, smallest first
+export const SIZE_OPTIONS = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
+
+// Colors offered in the product form's color dropdown
+// (names are also valid CSS colors, used for the swatch dots)
+export const COLOR_OPTIONS = [
+  "Black", "White", "Grey", "Red", "Maroon", "Pink", "Orange", "Yellow",
+  "Green", "Olive", "Blue", "Navy", "Purple", "Brown", "Beige",
+];
+
+// Saved values -> dropdown values: "red" becomes "Red" so it ticks the
+// standard option; anything not in the list is kept as it is
+const toOptions = (list, options) =>
+  Array.isArray(list)
+    ? list.map((v) => options.find((o) => o.toLowerCase() === String(v).trim().toLowerCase()) ?? v)
+    : [];
+
 export const EMPTY_PRODUCT = {
   title: "",
   short_description: "",
@@ -11,8 +28,8 @@ export const EMPTY_PRODUCT = {
   brand_id: "",
   remark: "",
   stock: "",
-  color: "", // comma separated in the input, sent as an array
-  size: "",
+  color: [], // picked from COLOR_OPTIONS in the color dropdown
+  size: [], // picked from SIZE_OPTIONS in the size dropdown
   description: "", // HTML from the rich text editor
 };
 
@@ -28,14 +45,10 @@ export const productToForm = (p) => ({
   brand_id: p?.brand_id || "",
   remark: p?.remark || "",
   stock: p?.stock ?? "",
-  color: Array.isArray(p?.color) ? p.color.join(", ") : "",
-  size: Array.isArray(p?.size) ? p.size.join(", ") : "",
+  color: toOptions(p?.color, COLOR_OPTIONS),
+  size: toOptions(p?.size, SIZE_OPTIONS),
   description: p?.description || "",
 });
-
-// "Red, Green ,, Blue" -> ["Red", "Green", "Blue"]
-const splitList = (text) =>
-  String(text).split(",").map((s) => s.trim()).filter(Boolean);
 
 // Quill leaves "<p><br></p>" when the editor is visually empty
 const isEditorEmpty = (html) =>
@@ -71,7 +84,7 @@ export const toPayload = (d) => ({
   brand_id: d.brand_id,
   remark: String(d.remark).trim(),
   stock: Number(d.stock),
-  color: splitList(d.color),
-  size: splitList(d.size),
+  color: d.color,
+  size: d.size,
   description: isEditorEmpty(d.description) ? "" : d.description,
 });
