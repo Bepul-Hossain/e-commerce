@@ -19,9 +19,24 @@ dotEnv.config({ path: ['.env.local', '.env'], quiet: true });
 
 mongoose.set('strictQuery', false);
 
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch((err) => console.error('Error connecting to MongoDB:', err));
+// On Vercel each serverless instance keeps its connection between requests.
+// If connecting fails, the cached promise is cleared so the next request retries
+// instead of the instance staying broken (and every query timing out after 10s).
+let mongoConnection = null;
+const connectDB = () => {
+    if (mongoose.connection.readyState === 1) return Promise.resolve();
+    if (!mongoConnection) {
+        mongoConnection = mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 8000 })
+            .then(() => console.log('Connected to MongoDB'))
+            .catch((err) => {
+                mongoConnection = null;
+                throw err;
+            });
+    }
+    return mongoConnection;
+};
+
+connectDB().catch((err) => console.error('Error connecting to MongoDB:', err));
 
 // Behind Vercel's proxy: needed so rate limiting sees the real client IP
 app.set('trust proxy', 1);
@@ -51,12 +66,26 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-app.use("/api/v1", router)
-
-// All files live in Vercel Blob; redirect to the public Blob URL
+// All files live in Vercel Blob; redirect to the public Blob URL (no database needed)
 app.get("/api/v1/get-file/:filename", (req, res) => {
     res.redirect(301, getBlobFileUrl(req.params.filename));
 });
+
+// Make sure the database is connected before any API route runs
+app.use("/api/v1", async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (err) {
+        console.error('Error connecting to MongoDB:', err);
+        res.status(503).json({
+            success: false,
+            message: "Database is unavailable, please try again.",
+        });
+    }
+});
+
+app.use("/api/v1", router)
 
 // Add React Front-end static super admin
 app.use("/super-admin", express.static(path.join(__dirname, "client", "super-admin", "dist"), {
