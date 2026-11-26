@@ -140,7 +140,7 @@ const Brand = () => {
                         onChange={(e) => setCreateData({ ...createData, brand_name: e.target.value })}
                         type="text"
                         className="common-input border"
-                        placeholder="Ex: Apna"
+                        placeholder="Ex: Kaporchai"
                       />
                     </div>
                     <div className="col-12">
@@ -276,7 +276,7 @@ const Brand = () => {
                         value={editData.brand_name}
                         type="text"
                         className="common-input border"
-                        placeholder="Ex: Apna"
+                        placeholder="Ex: Kaporchai"
                       />
                     </div>
                     <div className="col-12">

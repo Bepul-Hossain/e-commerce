@@ -228,9 +228,9 @@ const DashboardOrder = () => {
                               <small>Date: Dec 1, 2020</small>
                             </div>
                             <div className="col-sm-6 text-end">
-                              <h5 className="fw-bold">Apna</h5>
+                              <h5 className="fw-bold">Kaporchai</h5>
                               <p className="mb-0">123 Street, Chittagong</p>
-                              <p className="mb-0">support@apna.com</p>
+                              <p className="mb-0">support@kaporchai.shop</p>
                               <p className="mb-0">01701063964</p>
                             </div>
                           </div>
