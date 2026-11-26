@@ -15,7 +15,7 @@ const DashboardInner = () => {
         <div className="col-xxl-3 col-xl-4 col-md-6">
           <div className="card user-card shadow-sm border-0 p-3">
             <div className="card-body text-center">
-              <h6 className="text-secondary mb-2">Total Users</h6>
+              <h6 className="text-secondary mb-2">Total Users-</h6>
               <h4 className="number fw-bold mb-1">{dashboard?.totalUsers}</h4>
             </div>
           </div>
