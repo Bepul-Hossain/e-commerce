@@ -10,8 +10,10 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const dotEnv = require('dotenv');
 const router = require('./src/routes/api');
+const { getBlobFileUrl } = require('./src/utility/blob');
 
-dotEnv.config();
+// .env.local (from `vercel env pull`) takes priority over .env
+dotEnv.config({ path: ['.env.local', '.env'], quiet: true });
 
 // Connect to MongoDB
 
@@ -51,14 +53,10 @@ app.use(limiter);
 
 app.use("/api/v1", router)
 
-// On Vercel, files live in Vercel Blob; locally they are served from disk
-if (process.env.BLOB_BASE_URL) {
-    app.get("/api/v1/get-file/:filename", (req, res) => {
-        res.redirect(301, `${process.env.BLOB_BASE_URL}/${encodeURIComponent(req.params.filename)}`);
-    });
-} else {
-    app.use("/api/v1/get-file", express.static("uploads"));
-}
+// All files live in Vercel Blob; redirect to the public Blob URL
+app.get("/api/v1/get-file/:filename", (req, res) => {
+    res.redirect(301, getBlobFileUrl(req.params.filename));
+});
 
 // Add React Front-end static super admin
 app.use("/super-admin", express.static(path.join(__dirname, "client", "super-admin", "dist"), {

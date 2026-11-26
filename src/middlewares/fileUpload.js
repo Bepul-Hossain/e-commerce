@@ -1,9 +1,7 @@
 const multer = require('multer');
 const { put } = require('@vercel/blob');
 
-// Vercel's filesystem is read-only, so when a Blob token is present
-// files are kept in memory and uploaded to Vercel Blob instead of disk
-const useBlob = !!process.env.BLOB_READ_WRITE_TOKEN;
+// Files are always kept in memory and uploaded to Vercel Blob (never written to disk)
 
 const makeFileName = (originalname) => {
     const d = new Date();
@@ -22,14 +20,7 @@ const makeFileName = (originalname) => {
 };
 
 //Configure storage engine
-const storage = useBlob ? multer.memoryStorage() : multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/')
-    },
-    filename: (req, file, cb) => {
-        cb(null, makeFileName(file.originalname))
-    }
-})
+const storage = multer.memoryStorage();
 
 // Set file size limit and file filer
 const upload = multer({
@@ -46,9 +37,8 @@ const upload = multer({
 
 const fileUpload = (req, res, next) => {
     upload.single("file")(req, res, async (err) => {
-        console.log(err?.code);
-
         if (err) {
+            console.error(err);
             if (err?.code === "LIMIT_FILE_SIZE") {
                 return res.status(400).json({
                     success: false,
@@ -61,7 +51,7 @@ const fileUpload = (req, res, next) => {
             })
         }
 
-        if (useBlob && req.file) {
+        if (req.file) {
             try {
                 const fileName = makeFileName(req.file.originalname);
                 await put(fileName, req.file.buffer, {
